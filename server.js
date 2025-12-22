@@ -128,16 +128,17 @@ let countriesCache = null;
 async function buildCountriesCache() {
   try {
     const worldDir = path.join(__dirname, "map", "world");
-    const dirEntries = await fs.readdir(worldDir, { withFileTypes: true });
-    const continents = dirEntries.filter((d) => d.isDirectory()).map((d) => d.name);
+    const countriesDir = path.join(worldDir, "countries");
+
     const list = [];
-    for (const cont of continents) {
-      const contDir = path.join(worldDir, cont);
+
+    // If map/world/countries exists, prefer that flat structure
+    if (fsSync.existsSync(countriesDir)) {
       try {
-        const files = await fs.readdir(contDir);
+        const files = await fs.readdir(countriesDir);
         for (const f of files) {
           if (!f.toLowerCase().endsWith(".json")) continue;
-          const filePath = path.join(contDir, f);
+          const filePath = path.join(countriesDir, f);
           let parsed = null;
           try { parsed = JSON.parse(await fs.readFile(filePath, "utf8")); } catch (e) { parsed = null; }
           const id = path.basename(f, ".json");
@@ -145,18 +146,55 @@ async function buildCountriesCache() {
           list.push({
             id,
             name,
-            file: `/map/world/${cont}/${f}`,
-            continent: cont,
+            file: `/map/world/countries/${f}`,
+            continent: parsed && parsed.continent ? parsed.continent : null,
             meta: parsed && parsed.meta ? parsed.meta : null,
             last_update: parsed && parsed.last_update ? parsed.last_update : null,
           });
         }
       } catch (e) {
-        // ignore per-continent errors
+        // can't read countries folder — fallthrough to try continents
+        console.warn("buildCountriesCache: failed reading map/world/countries:", e);
       }
     }
-    // sort alpha
-    list.sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id));
+
+    // If we have no items from the flat countries dir, try the older continent/<country>.json structure
+    if (list.length === 0) {
+      try {
+        const dirEntries = await fs.readdir(worldDir, { withFileTypes: true });
+        const continents = dirEntries.filter((d) => d.isDirectory()).map((d) => d.name);
+        for (const cont of continents) {
+          const contDir = path.join(worldDir, cont);
+          try {
+            const files = await fs.readdir(contDir);
+            for (const f of files) {
+              if (!f.toLowerCase().endsWith(".json")) continue;
+              const filePath = path.join(contDir, f);
+              let parsed = null;
+              try { parsed = JSON.parse(await fs.readFile(filePath, "utf8")); } catch (e) { parsed = null; }
+              const id = path.basename(f, ".json");
+              const name = (parsed && (parsed.name || parsed.common)) || id;
+              list.push({
+                id,
+                name,
+                file: `/map/world/${cont}/${f}`,
+                continent: cont,
+                meta: parsed && parsed.meta ? parsed.meta : null,
+                last_update: parsed && parsed.last_update ? parsed.last_update : null,
+              });
+            }
+          } catch (e) {
+            // ignore per-continent errors
+          }
+        }
+      } catch (e) {
+        // worldDir might not exist or be unreadable
+        console.error("buildCountriesCache (continent fallback) error:", e);
+      }
+    }
+
+    // sort alpha by name (fallback to id)
+    list.sort((a, b) => ((a.name || a.id) || '').localeCompare((b.name || b.id) || ''));
     countriesCache = list;
   } catch (err) {
     console.error("buildCountriesCache failed:", err);
