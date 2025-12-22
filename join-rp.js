@@ -43,7 +43,7 @@
     modal.querySelector('#modalCancel').addEventListener('click', () => closeModal());
     modal.querySelector('#modalConfirm').addEventListener('click', () => {
       closeModal();
-      performJoin(); // actually submit
+      performJoin();
     });
 
     // allow Esc to close
@@ -148,7 +148,6 @@
       const txt = (opt.textContent || '').toLowerCase();
       opt.hidden = q ? !txt.includes(q) : false;
     }
-    // show/ hide clear button
     if (filterClear) filterClear.hidden = !q;
   }
 
@@ -171,7 +170,6 @@
       enableSubmit(false);
       return;
     }
-    // try to parse meta inline first
     const meta = sel.dataset.meta ? JSON.parse(sel.dataset.meta) : null;
     if (meta) {
       cp.flag.textContent = meta.flag_emoji || '🌍';
@@ -214,7 +212,6 @@
         showLoader(false);
       }
     } else {
-      // fallback: use sel text and dataset
       cp.name.textContent = sel.textContent;
       cp.meta.textContent = sel.dataset.continent || '';
       if (cp.code) cp.code.textContent = sel.dataset.code || 'Code —';
@@ -233,13 +230,11 @@
       const r = await apiFetch('/api/countries', { method: 'GET' });
       showLoader(false);
       if (!r.ok || !r.data) {
-        // fallback
         countriesList = FALLBACK_COUNTRIES.slice();
         setMsg('Liste des pays indisponible — mode démo.', 'info');
         populateSelect(countriesList);
         return;
       }
-      // expect r.data.countries or array
       countriesList = Array.isArray(r.data.countries) ? r.data.countries : (Array.isArray(r.data) ? r.data : []);
       if (!countriesList.length) {
         countriesList = FALLBACK_COUNTRIES.slice();
@@ -261,12 +256,15 @@
     e && e.preventDefault();
     setMsg('', 'info');
 
-    const country_id = (countrySelect.value || '').trim();
-    const country_name = countrySelect.selectedOptions?.[0]?.textContent || null;
+    const sel = countrySelect.selectedOptions?.[0];
+    const country_id = sel?.value?.trim() || null;
+    const country_name = sel?.textContent || null;
     const displayName = (displayNameInput.value || '').trim() || null;
 
-    if (!country_id) { setMsg('Choisis un pays.', 'error'); return; }
-    // show modal confirmation
+    if (!country_id) {
+      setMsg('Choisis un pays.', 'error');
+      return;
+    }
     openModal(`Confirmer : rejoindre ${country_name}${displayName ? ` — sous le nom ${displayName}` : ''} ?`);
   }
 
@@ -278,12 +276,22 @@
     enableSubmit(false);
     setMsg('', 'info');
 
-    const country_id = (countrySelect.value || '').trim();
-    const country_name = countrySelect.selectedOptions?.[0]?.textContent || null;
+    const sel = countrySelect.selectedOptions?.[0];
+    const country_id = sel?.value?.trim() || null;
+    const country_name = sel?.textContent || null;
     const displayName = (displayNameInput.value || '').trim() || null;
 
-    const origText = submitBtn.textContent;
-    submitBtn.textContent = 'Envoi…';
+    if (!country_id) {
+      setMsg('Choisis un pays avant de rejoindre le RP.', 'error');
+      showLoader(false);
+      enableSubmit(true);
+      isSubmitting = false;
+      return;
+    }
+
+    const origText = submitBtn ? submitBtn.textContent : '';
+
+    if (submitBtn) submitBtn.textContent = 'Envoi…';
 
     try {
       const r = await apiFetch('/api/user/join-rp', {
@@ -297,11 +305,10 @@
       if (!r.ok) {
         setMsg('Erreur : ' + (r.error || (r.data && r.data.error) || 'Impossible de rejoindre.'), 'error');
         enableSubmit(true);
-        submitBtn.textContent = origText;
+        if (submitBtn) submitBtn.textContent = origText;
         return;
       }
 
-      // handle common backend contracts
       const data = r.data || {};
       const assigned = data.assigned || r.assigned;
       const next = data.next || r.next;
@@ -325,7 +332,7 @@
       isSubmitting = false;
       setMsg('Erreur réseau — réessaie plus tard.', 'error');
       enableSubmit(true);
-      submitBtn.textContent = origText;
+      if (submitBtn) submitBtn.textContent = origText;
     }
   }
 
@@ -342,7 +349,6 @@
 
   countrySelect.addEventListener('change', fetchCountryPreview);
   displayNameInput.addEventListener('input', () => {
-    // no strict validation — but re-evaluate state (keeps button enabled if country chosen)
     enableSubmit(Boolean(countrySelect.value));
   });
 
@@ -379,7 +385,4 @@
 
   // expose performJoin for modal confirm to call
   window.__WC_performJoin = performJoin;
-
-  // connect modal confirm action to performJoin (safer reference)
-  // ensureModal was created on demand and its confirm already binds to performJoin via closure
 })();
