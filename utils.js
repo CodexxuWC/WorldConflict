@@ -58,8 +58,11 @@
     return WC._authToken;
   };
 
-  // wrapper fetch pour JSON, renvoie { ok, status, data, error }
-  // opts supports: method, headers, body, credentials, timeout (ms), signal, skipJsonAuto (bool)
+  /**
+   * WC.apiFetch
+   * - finalOpts supports: method, headers, body, credentials, timeout (ms), signal, skipJsonAuto (bool)
+   * - returns: { ok, status, data, error }
+   */
   WC.apiFetch = async function (url, opts = {}) {
     const finalOpts = Object.assign({}, opts);
     finalOpts.credentials = finalOpts.credentials || 'same-origin';
@@ -70,18 +73,31 @@
       finalOpts.headers.Authorization = 'Bearer ' + WC._authToken;
     }
 
-    // automatic JSON stringify when body is a plain object and not FormData
+    // ----- JSON handling -----
+    // If body is a plain object and automatic JSON isn't skipped, prepare JSON payload.
     if (finalOpts.body && typeof finalOpts.body === 'object' && !(finalOpts.body instanceof FormData) && !finalOpts.skipJsonAuto) {
       if (!finalOpts.headers['Content-Type'] && !finalOpts.headers['content-type']) {
         finalOpts.headers['Content-Type'] = 'application/json';
       }
-      // if Content-Type indicates JSON, stringify
       const ct = (finalOpts.headers['Content-Type'] || finalOpts.headers['content-type'] || '').toLowerCase();
       if (ct.includes('application/json')) {
         try {
           finalOpts.body = JSON.stringify(finalOpts.body);
         } catch (e) {
           return { ok: false, status: 0, error: 'Failed to serialize request body' };
+        }
+      }
+    }
+
+    // If body is a STRING which looks like JSON and no Content-Type was set,
+    // set Content-Type so express.json() on the server will parse it.
+    if (finalOpts.body && typeof finalOpts.body === 'string' && !(finalOpts.body instanceof FormData)) {
+      const hasCt = !!(finalOpts.headers['Content-Type'] || finalOpts.headers['content-type']);
+      if (!hasCt) {
+        // quick heuristic: if string looks like JSON, set header
+        const trimmed = finalOpts.body.trim();
+        if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+          finalOpts.headers['Content-Type'] = 'application/json';
         }
       }
     }
@@ -101,13 +117,13 @@
       const r = await fetch(url, finalOpts);
       if (timeoutId) clearTimeout(timeoutId);
 
-      const ct = r.headers.get('content-type') || '';
+      const ct = r.headers.get && r.headers.get('content-type') || '';
       let body = null;
+
       // handle 204 No Content
       if (r.status === 204) body = null;
       else if (ct.includes('application/json')) {
-        try { body = await r.json(); }
-        catch (e) { body = null; }
+        try { body = await r.json(); } catch (e) { body = null; }
       } else {
         try { body = await r.text(); } catch (e) { body = null; }
       }
