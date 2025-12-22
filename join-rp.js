@@ -1,6 +1,4 @@
-// join-rp.js — version améliorée : debounce search, clear button, modal confirmation,
-// fallback countries, UX accessible, better error handling.
-
+// Join-rp.js
 (() => {
   const countrySelect = document.getElementById('countrySelect');
   const countryFilter = document.getElementById('countryFilter');
@@ -12,7 +10,6 @@
   const msg = document.getElementById('msg');
   const preview = document.getElementById('countryPreview');
 
-  // preview elements
   const cp = {
     flag: document.getElementById('cpFlag'),
     name: document.getElementById('cpName'),
@@ -22,7 +19,6 @@
     pop: document.getElementById('cpPop'),
   };
 
-  // confirmation modal (created dynamically to avoid modifying HTML too much)
   let modal = null;
   function ensureModal() {
     if (modal) return modal;
@@ -33,20 +29,18 @@
         <h3 id="modalTitle" style="margin:0 0 8px 0">Confirmer ton choix</h3>
         <div id="modalBody" class="muted">Rejoindre ce pays ?</div>
         <div class="modal-actions">
-          <button id="modalCancel" class="btn ghost small">Annuler</button>
-          <button id="modalConfirm" class="btn primary">Rejoindre</button>
+          <button id="modalCancel" type="button" class="btn ghost small">Annuler</button>
+          <button id="modalConfirm" type="button" class="btn primary">Rejoindre</button>
         </div>
       </div>`;
     document.body.appendChild(modal);
 
-    // wire buttons
     modal.querySelector('#modalCancel').addEventListener('click', () => closeModal());
     modal.querySelector('#modalConfirm').addEventListener('click', () => {
       closeModal();
       performJoin();
     });
 
-    // allow Esc to close
     document.addEventListener('keydown', (e) => {
       if (!modal.classList.contains('open')) return;
       if (e.key === 'Escape') closeModal();
@@ -58,17 +52,18 @@
     const m = ensureModal();
     m.querySelector('#modalBody').textContent = text || 'Rejoindre ce pays ?';
     m.classList.add('open');
-    // focus confirm for keyboard users
-    setTimeout(() => m.querySelector('#modalConfirm').focus(), 80);
+    setTimeout(() => {
+      const c = m.querySelector('#modalConfirm');
+      if (c) c.focus();
+    }, 60);
   }
   function closeModal() {
     if (!modal) return;
     modal.classList.remove('open');
   }
 
-  // API helper (wrap WC.apiFetch if present)
+  // apiFetch wrapper (keeps credentials and JSON header)
   const WC_API = window.WC && typeof window.WC.apiFetch === 'function' ? window.WC.apiFetch : null;
-
   async function apiFetch(url, opts) {
     if (WC_API) return WC_API(url, opts);
     opts = opts || {};
@@ -99,14 +94,12 @@
     loader.classList.toggle('hidden', !show);
     loader.setAttribute('aria-hidden', String(!show));
   }
-
   function enableSubmit(enable = true) {
     if (!submitBtn) return;
     submitBtn.disabled = !enable;
     submitBtn.setAttribute('aria-disabled', String(!enable));
   }
 
-  // Debounce utility for search
   function debounce(fn, wait = 250) {
     let t = null;
     return function (...args) {
@@ -115,7 +108,6 @@
     };
   }
 
-  // small curated fallback if /api/countries fails (keeps UX alive)
   const FALLBACK_COUNTRIES = [
     { id: 'fr', name: 'France', continent: 'Europe', file: null, meta: { code: 'FR', pop: '67M' } },
     { id: 'us', name: 'États-Unis', continent: 'Amérique', file: null, meta: { code: 'US', pop: '331M' } },
@@ -124,27 +116,51 @@
   ];
 
   let countriesList = [];
+  let countriesLoaded = false;
   let isSubmitting = false;
 
-  // populate select with countries (sorted)
+  // utility: get basename from path
+  function basenamePath(p) {
+    if (!p) return null;
+    try {
+      return p.split('/').pop().replace(/\.json$/i, '');
+    } catch (e) { return null; }
+  }
+
+  // populate select: handle c.id OR fallback to filename; support c.meta or c.metadata
   function populateSelect(list) {
     countrySelect.innerHTML = '<option value="">-- Choisir un pays --</option>';
     list.sort((a,b) => (a.name||'').localeCompare(b.name||''));
     for (const c of list) {
       const opt = document.createElement('option');
-      opt.value = c.id || c.id;
-      opt.textContent = c.name || c.id;
+      // determine value: prefer explicit id, else fallback to filename (from file path), else slugged name
+      let val = null;
+      if (c.id) val = String(c.id);
+      else if (c.file) val = basenamePath(c.file);
+      else if (c.name) val = String(c.name).toLowerCase().replace(/\s+/g, '_').replace(/[^\w_-]/g, '');
+      if (!val) continue; // skip malformed entries
+      opt.value = val;
+      opt.textContent = c.name || val;
+
+      // dataset file (if provided)
       if (c.file) opt.dataset.file = c.file;
       if (c.continent) opt.dataset.continent = c.continent;
-      if (c.meta) opt.dataset.meta = JSON.stringify(c.meta);
+      // accept both meta and metadata keys
+      const metaObj = c.meta || c.metadata || c.metadata || null;
+      if (metaObj) {
+        try { opt.dataset.meta = JSON.stringify(metaObj); } catch (e) { opt.dataset.meta = null; }
+      }
       countrySelect.appendChild(opt);
     }
+
+    countriesLoaded = true;
+    updateSubmitState();
   }
 
   function filterSelect(q) {
     q = (q || '').toLowerCase().trim();
     for (const opt of Array.from(countrySelect.options)) {
-      if (!opt.value) continue;
+      if (!opt.value) continue; // keep placeholder visible
       const txt = (opt.textContent || '').toLowerCase();
       opt.hidden = q ? !txt.includes(q) : false;
     }
@@ -159,10 +175,11 @@
     cp.name.textContent = '—';
     cp.meta.textContent = '';
     cp.desc.textContent = '';
-    cp.code && (cp.code.textContent = 'Code —');
-    cp.pop && (cp.pop.textContent = 'Pop —');
+    if (cp.code) cp.code.textContent = 'Code —';
+    if (cp.pop) cp.pop.textContent = 'Pop —';
   }
 
+  // read meta field from option or from file
   async function fetchCountryPreview() {
     clearPreview();
     const sel = countrySelect.selectedOptions?.[0];
@@ -170,7 +187,11 @@
       enableSubmit(false);
       return;
     }
-    const meta = sel.dataset.meta ? JSON.parse(sel.dataset.meta) : null;
+
+    // try inline meta first (supports meta or metadata saved in dataset)
+    let meta = null;
+    try { meta = sel.dataset.meta ? JSON.parse(sel.dataset.meta) : null; } catch (e) { meta = null; }
+
     if (meta) {
       cp.flag.textContent = meta.flag_emoji || '🌍';
       cp.name.textContent = meta.name || sel.textContent;
@@ -184,6 +205,7 @@
       return;
     }
 
+    // otherwise try to fetch the country file if dataset.file exists
     const file = sel.dataset.file;
     if (file) {
       showLoader(true);
@@ -193,10 +215,10 @@
           const d = await r.json();
           cp.flag.textContent = d.flag_emoji || d.emoji || '🌍';
           cp.name.textContent = d.name || d.common || sel.textContent;
-          cp.meta.textContent = d.region || d.continent || (sel.dataset.continent || '');
+          cp.meta.textContent = d.continent || d.region || sel.dataset.continent || '';
           cp.desc.textContent = d.description || d.summary || '';
-          if (cp.code) cp.code.textContent = d.code ? `Code ${d.code}` : 'Code —';
-          if (cp.pop) cp.pop.textContent = d.pop ? `Pop ${d.pop}` : 'Pop —';
+          if (cp.code) cp.code.textContent = (d.metadata && d.metadata.code) ? `Code ${d.metadata.code}` : (d.code ? `Code ${d.code}` : 'Code —');
+          if (cp.pop) cp.pop.textContent = (d.metadata && d.metadata.pop) ? `Pop ${d.metadata.pop}` : (d.pop ? `Pop ${d.pop}` : 'Pop —');
           preview.classList.remove('hidden');
           preview.classList.add('visible');
         } else {
@@ -212,6 +234,7 @@
         showLoader(false);
       }
     } else {
+      // fallback: just show the name from the option
       cp.name.textContent = sel.textContent;
       cp.meta.textContent = sel.dataset.continent || '';
       if (cp.code) cp.code.textContent = sel.dataset.code || 'Code —';
@@ -219,12 +242,14 @@
       preview.classList.remove('hidden');
       preview.classList.add('visible');
     }
+
     enableSubmit(true);
   }
 
-  // load countries from API, fallback to local list if necessary
+  // load countries
   async function loadCountries() {
     countrySelect.innerHTML = '<option value="">— Chargement —</option>';
+    countriesLoaded = false;
     showLoader(true);
     try {
       const r = await apiFetch('/api/countries', { method: 'GET' });
@@ -235,7 +260,10 @@
         populateSelect(countriesList);
         return;
       }
-      countriesList = Array.isArray(r.data.countries) ? r.data.countries : (Array.isArray(r.data) ? r.data : []);
+      // server returns { ok: true, countries: [...] }
+      const payload = r.data;
+      const arr = Array.isArray(payload.countries) ? payload.countries : (Array.isArray(payload) ? payload : (Array.isArray(r.data) ? r.data : []));
+      countriesList = arr;
       if (!countriesList.length) {
         countriesList = FALLBACK_COUNTRIES.slice();
         setMsg('Aucun pays trouvé — mode démo.', 'info');
@@ -251,11 +279,16 @@
     }
   }
 
-  // handle submit flow with modal confirmation
-  async function formSubmitHandler(e) {
-    e && e.preventDefault();
-    setMsg('', 'info');
+  // ensure submit enabled only when countries loaded and a valid option is selected
+  function updateSubmitState() {
+    const sel = countrySelect.selectedOptions?.[0];
+    enableSubmit(Boolean(countriesLoaded && sel && sel.value));
+  }
 
+  // form submit (opens modal)
+  async function formSubmitHandler(e) {
+    if (e) e.preventDefault();
+    setMsg('', 'info');
     const sel = countrySelect.selectedOptions?.[0];
     const country_id = sel?.value?.trim() || null;
     const country_name = sel?.textContent || null;
@@ -268,80 +301,80 @@
     openModal(`Confirmer : rejoindre ${country_name}${displayName ? ` — sous le nom ${displayName}` : ''} ?`);
   }
 
-async function performJoin() {
-  if (isSubmitting) return;
-  isSubmitting = true;
-  showLoader(true);
-  enableSubmit(false);
-  setMsg('', 'info');
+  // actual join request
+  async function performJoin() {
+    if (isSubmitting) return;
+    // final safety: prevent sending if button disabled
+    if (submitBtn && submitBtn.disabled) return;
 
-  // lire l'option sélectionnée
-  const sel = countrySelect.selectedOptions?.[0];
-  const country_id = sel?.value?.trim() || null;
-  const country_name = sel?.textContent || null;
-  const displayName = (displayNameInput.value || '').trim() || null;
+    isSubmitting = true;
+    showLoader(true);
+    enableSubmit(false);
+    setMsg('', 'info');
 
-  // DEBUG rapide sur mobile
-  console.log('DEBUG performJoin:', { country_id, country_name, displayName });
-  // ou si tu veux une alert pour tester direct sur tel
-  // alert(`country_id=${country_id}\ncountry_name=${country_name}\ndisplayName=${displayName}`);
+    const sel = countrySelect.selectedOptions?.[0];
+    const country_id = sel?.value?.trim() || null;
+    const country_name = sel?.textContent || null;
+    const displayName = (displayNameInput.value || '').trim() || null;
 
-  if (!country_id) {
-    setMsg('Choisis un pays avant de rejoindre le RP.', 'error');
-    showLoader(false);
-    enableSubmit(true);
-    isSubmitting = false;
-    return;
-  }
+    console.debug('performJoin payload:', { country_id, country_name, displayName });
 
-  const origText = submitBtn ? submitBtn.textContent : '';
-  if (submitBtn) submitBtn.textContent = 'Envoi…';
+    if (!country_id) {
+      setMsg('Choisis un pays avant de rejoindre le RP.', 'error');
+      showLoader(false);
+      enableSubmit(true);
+      isSubmitting = false;
+      return;
+    }
 
-  try {
-    const r = await apiFetch('/api/user/join-rp', {
-      method: 'POST',
-      body: JSON.stringify({ country_id, country_name, displayName })
-    });
+    const origText = submitBtn ? submitBtn.textContent : '';
+    if (submitBtn) submitBtn.textContent = 'Envoi…';
 
-    showLoader(false);
-    isSubmitting = false;
+    try {
+      const r = await apiFetch('/api/user/join-rp', {
+        method: 'POST',
+        body: JSON.stringify({ country_id, country_name, displayName })
+      });
 
-    if (!r.ok) {
-      setMsg('Erreur : ' + (r.error || (r.data && r.data.error) || 'Impossible de rejoindre.'), 'error');
+      showLoader(false);
+      isSubmitting = false;
+
+      if (!r.ok) {
+        const errMsg = r.error || (r.data && r.data.error) || 'Impossible de rejoindre.';
+        setMsg('Erreur : ' + errMsg, 'error');
+        enableSubmit(true);
+        if (submitBtn) submitBtn.textContent = origText;
+        return;
+      }
+
+      const data = r.data || {};
+      const assigned = data.assigned || r.assigned;
+      const next = data.next || r.next;
+
+      if (assigned === 'leader') {
+        setMsg('Tu es le premier membre — tu es maintenant dirigeant. Redirection…', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 700);
+        return;
+      }
+      if (next === '/choose-role.html' || next === 'choose-role') {
+        setMsg('Étape suivante : choisir un rôle — redirection…', 'info');
+        setTimeout(() => window.location.href = '/choose-role.html', 600);
+        return;
+      }
+
+      setMsg('Inscription prise en compte — redirection…', 'success');
+      setTimeout(() => window.location.href = 'dashboard.html', 700);
+    } catch (err) {
+      console.error(err);
+      showLoader(false);
+      isSubmitting = false;
+      setMsg('Erreur réseau — réessaie plus tard.', 'error');
       enableSubmit(true);
       if (submitBtn) submitBtn.textContent = origText;
-      return;
     }
-
-    const data = r.data || {};
-    const assigned = data.assigned || r.assigned;
-    const next = data.next || r.next;
-
-    if (assigned === 'leader') {
-      setMsg('Tu es le premier membre — tu es maintenant dirigeant. Redirection…', 'success');
-      setTimeout(() => window.location.href = 'dashboard.html', 700);
-      return;
-    }
-    if (next === '/choose-role.html' || next === 'choose-role') {
-      setMsg('Étape suivante : choisir un rôle — redirection…', 'info');
-      setTimeout(() => window.location.href = '/choose-role.html', 600);
-      return;
-    }
-
-    setMsg('Inscription prise en compte — redirection…', 'success');
-    setTimeout(() => window.location.href = 'dashboard.html', 700);
-
-  } catch (err) {
-    console.error(err);
-    showLoader(false);
-    isSubmitting = false;
-    setMsg('Erreur réseau — réessaie plus tard.', 'error');
-    enableSubmit(true);
-    if (submitBtn) submitBtn.textContent = origText;
   }
-}
 
-  // wire up events
+  // events
   countryFilter.addEventListener('input', debounce((e) => filterSelect(e.target.value), 180));
   if (filterClear) {
     filterClear.addEventListener('click', () => {
@@ -352,42 +385,41 @@ async function performJoin() {
     });
   }
 
-  countrySelect.addEventListener('change', fetchCountryPreview);
-  displayNameInput.addEventListener('input', () => {
-    enableSubmit(Boolean(countrySelect.value));
+  countrySelect.addEventListener('change', () => {
+    fetchCountryPreview();
+    updateSubmitState();
   });
 
-  // form submit attaches confirmation modal
+  displayNameInput.addEventListener('input', () => {
+    updateSubmitState();
+  });
+
   const form = document.getElementById('joinForm');
   if (form) form.addEventListener('submit', formSubmitHandler);
 
-  // skip button
-  skipBtn.addEventListener('click', () => { window.location.href = 'dashboard.html'; });
+  if (skipBtn) skipBtn.addEventListener('click', () => { window.location.href = 'dashboard.html'; });
 
-  // on DOM ready bootstrap sequence
+  // bootstrap
   (async () => {
     await loadCountries();
     clearPreview();
+    // keep button disabled until a selection is made
     enableSubmit(false);
 
-    // session check — keep behaviour but softer: redirect only if no session
     try {
       const r = await apiFetch('/api/session', { method: 'GET' });
       if (!r.ok || !r.data || !r.data.ok) {
-        // not authenticated — redirect to index/login
         window.location.href = 'index.html';
         return;
       }
       if (r.data.rp && r.data.rp.joined) {
-        // already joined — redirect
         window.location.href = 'dashboard.html';
         return;
       }
     } catch (e) {
-      // network issues — allow the user to continue with fallback countries
+      // allow continued use in offline/demo mode
     }
   })();
 
-  // expose performJoin for modal confirm to call
   window.__WC_performJoin = performJoin;
 })();
