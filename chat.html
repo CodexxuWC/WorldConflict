@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Chat</title>
+
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- HEADER -->
+    <header class="wc-header minimalist" role="banner">
+      <div class="wc-brand">
+        <div class="brand-title">WorldConflict</div>
+        <div id="headerSub" class="brand-sub muted" aria-live="polite">Chargement…</div>
+      </div>
+
+      <div class="header-actions">
+        <button id="membersBtn" class="round-btn" title="Voir les membres" aria-expanded="false" aria-controls="membersOverlay" aria-pressed="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-2.8 4.5-4 6-4h8c1.5 0 6 1.2 6 4v1H2v-1z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <main class="chat-container" role="main" aria-label="Interface de chat">
+
+      <!-- LEFT: Sidebar -->
+      <aside class="sidebar panel" aria-label="Navigation des salons">
+        <div class="sidebar-top">
+          <div class="sidebar-title">SALONS</div>
+          <div class="sidebar-actions">
+            <button id="createChannelBtn" class="btn ghost tiny" title="Créer un salon">+</button>
+          </div>
+        </div>
+
+        <div class="channel-nav-wrap" aria-hidden="false">
+          <div class="cat-title">TEXTE</div>
+          <ul id="channelNavText" class="channel-nav" aria-label="Salons textuels" role="navigation"></ul>
+
+          <div class="cat-title" style="margin-top:12px">VOCAUX</div>
+          <ul id="channelNavVoice" class="channel-nav" aria-label="Salons vocaux" role="navigation"></ul>
+        </div>
+
+        <div class="sidebar-search" style="margin-top:8px">
+          <label for="channelSearch" class="visually-hidden">Rechercher un salon</label>
+          <input id="channelSearch" class="text-input" placeholder="Rechercher" aria-label="Rechercher un salon" autocomplete="off">
+        </div>
+      </aside>
+
+      <!-- CENTER: Messages -->
+      <section class="panel messages-panel" aria-label="Messages du salon">
+        <div class="messages-header">
+          <div>
+            <h2 id="currentChannelName" class="channel-header"># global</h2>
+            <div id="currentChannelInfo" class="muted small" aria-live="polite">—</div>
+          </div>
+
+          <div class="messages-header-actions">
+            <div id="voiceControls" class="voice-controls" aria-hidden="true"></div>
+            <button id="leaveChannelBtn" class="btn ghost small" title="Quitter le salon">Quitter</button>
+          </div>
+        </div>
+
+        <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions">
+          <!-- messages injectés par JS -->
+        </div>
+
+        <form id="sendForm" class="send-form" autocomplete="off" aria-label="Envoyer un message">
+          <label for="msgInput" class="visually-hidden">Message</label>
+          <textarea id="msgInput" class="text-input" placeholder="Écris un message — Entrée pour envoyer, Shift+Entrée pour saut de ligne" rows="1" aria-label="Message"></textarea>
+          <button id="sendBtn" type="submit" class="btn primary" aria-label="Envoyer le message">Envoyer</button>
+        </form>
+      </section>
+
+      <!-- RIGHT: Info & members -->
+      <aside class="panel right-panel" aria-label="Informations">
+        <div class="panel-card">
+          <h3>À propos</h3>
+          <p id="rightInfo" class="muted">Sélectionne un salon pour voir les détails.</p>
+        </div>
+
+        <div class="panel-card members-panel" style="margin-top:12px">
+          <h4>Membres</h4>
+          <ul id="membersList" class="members muted">—</ul>
+        </div>
+      </aside>
+    </main>
+
+    <!-- MEMBERS OVERLAY -->
+    <aside id="membersOverlay" class="members-overlay" role="dialog" aria-hidden="true" aria-label="Liste des membres">
+      <header class="overlay-header">
+        <h3>Membres</h3>
+        <button id="closeMembers" class="icon-btn" aria-label="Fermer">✕</button>
+      </header>
+
+      <section class="overlay-body">
+        <div class="members-section">
+          <h4>Actifs</h4>
+          <ul id="overlayActive" class="members-list">—</ul>
+        </div>
+        <div class="members-section" style="margin-top:10px">
+          <h4>Inactifs</h4>
+          <ul id="overlayInactive" class="members-list">—</ul>
+        </div>
+      </section>
+    </aside>
+
+    <!-- toast -->
+    <div id="wcToast" class="wc-toast" role="status" aria-live="polite"></div>
+
+    <!-- bottom nav -->
+    <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+      <button id="navChat" class="nav-item active" aria-label="Chat">Chat</button>
+      <button id="navDashboard" class="nav-item" aria-label="Lobby">Lobby</button>
+      <button id="navNotifs" class="nav-item" aria-label="Notifications">Notifications</button>
+      <button id="navProfile" class="nav-item" aria-label="Profil">Profil</button>
+    </nav>
+  </div>
+
+  <script src="utils.js" defer></script>
+  <script src="chat.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Notifications</title>
+
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="notifications.css">
+</head>
+<body>
+  <div class="notif-shell container">
+
+    <header class="notif-header">
+      <div>
+        <h1>Notifications</h1>
+        <p class="muted">Toutes tes alertes récentes — RP &amp; système.</p>
+      </div>
+      <div class="notif-actions">
+        <button id="btnMarkAllRead" class="btn btn-ghost small">Marquer tout lu</button>
+        <button id="btnClear" class="btn btn-ghost small">Tout supprimer</button>
+      </div>
+    </header>
+
+    <main class="notif-main">
+      <nav class="notif-tabs" role="tablist" aria-label="Filtres de notifications">
+        <button role="tab" aria-selected="true" data-filter="all" class="tab active">Toutes</button>
+        <button role="tab" data-filter="rp" class="tab">RP</button>
+        <button role="tab" data-filter="hrp" class="tab">HRP</button>
+        <button role="tab" data-filter="mentions" class="tab">Mentions</button>
+        <button role="tab" data-filter="system" class="tab">Système</button>
+      </nav>
+
+      <section id="notifList" class="notif-list" aria-live="polite" aria-busy="false">
+        <!-- notifications injected here -->
+      </section>
+
+      <div class="load-row">
+        <button id="btnLoadMore" class="btn btn-ghost">Charger plus</button>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigation">
+      <button id="nav-chat" class="nav-btn" title="Chat">Chat</button>
+      <button id="nav-lobby" class="nav-btn" title="Lobby">Lobby</button>
+      <button id="nav-notifs" class="nav-btn active" title="Notifications">Notif</button>
+      <button id="nav-profile" class="nav-btn" title="Profil">Profil</button>
+    </nav>
+
+    <div id="toast" class="wc-toast visually-hidden" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="utils.js" defer></script>
+  <script src="notifications.js" defer></script>
+</body>
+</html>

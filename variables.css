@@ -1,0 +1,342 @@
+/* variables.css — Global design tokens and bottom-nav theme
+   - Centralizes color, spacing, radius, shadow and interaction tokens
+   - Designed for the project's dark theme (matches existing pages)
+   - Overwrite the current variables.css with this content
+*/
+
+/* ---------------------------
+   CORE THEME VARIABLES
+   --------------------------- */
+:root {
+  /* Palette */
+  --bg: #0b1020;                /* page background */
+  --surface: #0f1724;           /* main panels / cards */
+  --panel-bg: var(--surface);
+  --text: #e6eef8;              /* primary text */
+  --muted: #9aa4b2;             /* secondary text */
+  --muted-contrast: rgba(230,238,248,0.72);
+
+  /* Accents */
+  --accent1: #4f46e5;           /* primary accent (violet) */
+  --accent2: #06b6d4;           /* secondary accent (turquoise) */
+  --on-accent: #ffffff;         /* text color on accent */
+
+  /* Semantic colors */
+  --success: #16a34a;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #60a5fa;
+
+  /* Glass / subtle layers */
+  --glass: rgba(255,255,255,0.03);
+  --glass-strong: rgba(255,255,255,0.06);
+
+  /* Borders / strokes */
+  --muted-border: rgba(255,255,255,0.04);
+  --border-strong: rgba(255,255,255,0.06);
+
+  /* Chips / small surfaces */
+  --chip-bg: rgba(255,255,255,0.02);
+  --chip-text: var(--text);
+
+  /* Shadows / elevation */
+  --shadow-xs: 0 2px 8px rgba(2,6,23,0.32);
+  --shadow-sm: 0 6px 18px rgba(2,6,23,0.36);
+  --card-elev: 0 14px 40px rgba(2,6,23,0.44);
+
+  /* Typography & fonts */
+  --font-stack: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --text-size-base: 15px;
+
+  /* Sizes & geometry */
+  --radius: 12px;
+  --radius-sm: 10px;
+  --space-xs: 6px;
+  --space-sm: 10px;
+  --space-md: 16px;
+  --space-lg: 24px;
+
+  /* Interaction */
+  --transition: 180ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* ---------------------------
+   BOTTOM-NAV SPECIFIC VARIABLES
+   --------------------------- */
+:root {
+  /* container */
+  --nav-bottom-offset: 18px;
+  --nav-max-width: 980px;
+  --nav-pill-radius: 14px;
+
+  /* item sizing */
+  --nav-item-min-width: 84px;
+  --nav-item-height: 52px;
+  --nav-icon-size: 18px;
+  --nav-font-size: 13px;
+
+  /* colors */
+  --nav-bg: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.004));
+  --nav-border: rgba(255,255,255,0.03);
+  --nav-text: var(--muted);
+  --nav-active-text: var(--on-accent);
+
+  /* active style */
+  --nav-active-bg: linear-gradient(90deg, var(--accent1), var(--accent2));
+  --nav-active-elev: 0 14px 32px rgba(79,70,229,0.18);
+  --nav-active-translate: -4px;
+
+  /* subtle hover */
+  --nav-hover-bg: rgba(255,255,255,0.02);
+  --nav-hover-color: var(--accent2);
+
+  /* focus / outline */
+  --nav-focus-outline: 3px solid rgba(79,70,229,0.12);
+
+  /* ripple */
+  --nav-ripple-color: rgba(255,255,255,0.06);
+
+  /* icon filter fallback */
+  --nav-icon-filter: none;
+}
+
+/* ---------------------------
+   Base reset & utilities
+   --------------------------- */
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-stack);
+  font-size: var(--text-size-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
+/* basic helpers */
+.hidden { display: none !important; }
+.container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+.btn {
+  padding: 10px 14px;
+  border-radius: calc(var(--radius) / 1.2);
+  transition: all var(--transition);
+  cursor: pointer;
+  font-weight: 700;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  color: var(--on-accent);
+  box-shadow: var(--shadow-sm);
+  border-color: transparent;
+}
+
+/* Inline messages */
+.msg { font-size: 0.95rem; padding: 8px 10px; border-radius: 8px; margin-top: 8px; }
+.msg-error { background: rgba(239,68,68,0.06); color: #ffb3b3; border: 1px solid rgba(239,68,68,0.08); }
+.msg-success { background: rgba(16,185,129,0.04); color: #bfffd6; border: 1px solid rgba(16,185,129,0.06); }
+.msg-info { background: rgba(96,165,250,0.04); color: #dbe9ff; border: 1px solid rgba(96,165,250,0.06); }
+
+/* Accessibility */
+:focus { outline: none; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :root { --transition: 1ms linear; }
+}
+
+/* ---------------------------
+   Form / Input tokens
+   --------------------------- */
+:root {
+  --input-bg: rgba(255,255,255,0.01);
+  --input-border: var(--muted-border);
+  --input-radius: 8px;
+  --placeholder: rgba(255,255,255,0.34);
+}
+
+/* Small components tokens */
+:root {
+  --chip-padding: 6px 8px;
+  --chip-radius: 8px;
+  --badge-bg: rgba(255,255,255,0.02);
+  --badge-text: var(--text);
+}
+
+/* ---------------------------
+   Bottom nav styles (drop-in)
+   Uses variables defined above — do not duplicate in page css
+   --------------------------- */
+
+/* Outer container — centered pill with shadow, floats above content */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--nav-bottom-offset);
+  display: flex;
+  justify-content: center;
+  z-index: 999;
+  pointer-events: auto;
+  padding: 0 12px;
+}
+
+/* the pill that contains buttons — centers and constrains width */
+.bottom-nav .nav-pill {
+  width: min(calc(100% - 32px), var(--nav-max-width));
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--nav-pill-radius);
+  background: var(--nav-bg);
+  border: 1px solid var(--nav-border);
+  box-shadow: var(--card-elev);
+  backdrop-filter: blur(6px);
+}
+
+/* each button — balanced spacing and typography */
+.bottom-nav .nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: var(--nav-item-min-width);
+  height: var(--nav-item-height);
+  padding: 8px 12px;
+  border-radius: calc(var(--nav-pill-radius) - 4px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--nav-text);
+  font-weight: 700;
+  font-size: var(--nav-font-size);
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* optional icon area (keeps layout predictable) */
+.bottom-nav .nav-btn .nav-icon {
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+  display: inline-block;
+  flex: 0 0 var(--nav-icon-size);
+  transform: translateZ(0);
+  filter: var(--nav-icon-filter);
+}
+
+/* label text */
+.bottom-nav .nav-btn .nav-label {
+  display: inline-block;
+  line-height: 1;
+}
+
+/* hover/focus — subtle highlight */
+.bottom-nav .nav-btn:hover,
+.bottom-nav .nav-btn:focus {
+  background: var(--nav-hover-bg);
+  color: var(--nav-hover-color);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(6,11,41,0.06);
+  outline: none;
+}
+
+/* active state — visually prominent, pops out */
+.bottom-nav .nav-btn.active {
+  color: var(--nav-active-text);
+  background: var(--nav-active-bg);
+  transform: translateY(var(--nav-active-translate));
+  box-shadow: var(--nav-active-elev);
+  border-color: transparent;
+}
+
+/* focus-visible (keyboard users) */
+.bottom-nav .nav-btn:focus-visible {
+  box-shadow: var(--nav-focus-outline);
+  transform: translateY(-2px);
+}
+
+/* ripple effect created with pseudo-element */
+.bottom-nav .nav-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background: var(--nav-ripple-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 420ms cubic-bezier(.2,.9,.2,1), opacity 320ms linear;
+  pointer-events: none;
+}
+.bottom-nav .nav-btn:active::after {
+  transform: translate(-50%, -50%) scale(20);
+  opacity: 1;
+  transition: transform 220ms cubic-bezier(.18,.8,.3,1), opacity 420ms linear;
+}
+
+/* responsive collapse: when narrow we compact spacing and allow icons-only */
+@media (max-width: 640px) {
+  :root {
+    --nav-item-min-width: 64px;
+    --nav-font-size: 12px;
+    --nav-icon-size: 16px;
+    --nav-item-height: 46px;
+  }
+
+  .bottom-nav .nav-pill {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  /* per-page control: .icon-only will hide labels */
+  .bottom-nav.icon-only .nav-btn .nav-label { display: none; }
+}
+
+/* utility: full-width variant (if preferring centered pill removed) */
+.bottom-nav.fullwidth {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+}
+.bottom-nav.fullwidth .nav-pill {
+  width: 100%;
+  border-radius: 0;
+  padding: 10px;
+  justify-content: space-around;
+}
+
+/* ensure bottom-nav never covers critical content on small screens */
+@media (max-height: 640px) {
+  body { padding-bottom: calc(var(--nav-item-height) + var(--nav-bottom-offset) + 16px); }
+}
+
+/* small niceties: accessible hidden text for icons-only */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------
+   END of variables.css
+   --------------------------- */

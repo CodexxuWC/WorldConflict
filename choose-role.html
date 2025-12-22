@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Choisir un rôle</title>
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="join-rp.css">
+</head>
+<body>
+  <main class="wrap container">
+    <section class="card join-card" aria-labelledby="chooseTitle">
+      <header class="card-header">
+        <div>
+          <h1 id="chooseTitle">Choisir ton rôle</h1>
+          <p class="muted sub">Tu n'es pas le premier membre pour ce pays — choisis si tu veux être Ministre ou Citoyen.</p>
+        </div>
+      </header>
+
+      <form id="chooseRoleForm" class="form" novalidate>
+        <div class="row">
+          <label class="label">Rôle souhaité</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <label style="display:flex;flex-direction:column;gap:6px;cursor:pointer">
+              <input type="radio" name="role" value="minister" /> <strong>Ministre</strong>
+              <span class="muted">Accès aux fonctions officielles (sous réserve).</span>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px;cursor:pointer">
+              <input type="radio" name="role" value="citizen" /> <strong>Citoyen</strong>
+              <span class="muted">Participation normale. Tu choisiras ensuite un job.</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="citizenJobRow" class="row hidden">
+          <label for="jobSelect" class="label">Choisis un job (si citoyen)</label>
+          <select id="jobSelect" class="select">
+            <option value="">-- Choisir un job --</option>
+            <option value="teacher">Enseignant</option>
+            <option value="doctor">Médecin</option>
+            <option value="engineer">Ingénieur</option>
+            <option value="farmer">Agriculteur</option>
+            <option value="journalist">Journaliste</option>
+            <option value="trader">Commerçant</option>
+            <option value="none">Aucun / Libre</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <div>
+            <div id="chooseMsg" class="msg"></div>
+          </div>
+          <div class="actions-right">
+            <a class="btn ghost" href="dashboard.html">Annuler</a>
+            <button id="chooseSubmit" class="btn primary" type="submit">Valider</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="utils.js" defer></script>
+  <script src="choose-role.js" defer></script>
+</body>
+</html>

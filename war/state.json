@@ -1,0 +1,22 @@
+{
+  "wars": [
+    {
+      "id": "war_france_germany_1766395261149",
+      "attackers": [
+        "france"
+      ],
+      "defenders": [
+        "germany"
+      ],
+      "status": "active",
+      "startedAt": "2025-12-22T09:21:01.150Z",
+      "endedAt": null,
+      "intensity": 0.24167458310713313,
+      "casualties": {
+        "france": null,
+        "germany": null
+      },
+      "economyImpact": {}
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Europe",
+  "slug": "europe",
+  "type": "continent",
+  "version": "1.0",
+  "last_update": "2025-11-01T00:00:00Z",
+  "meta": {
+    "source": "WorldConflict-minimal",
+    "auto_generated": false
+  },
+  "statistics": {
+    "population_estimate": null,
+    "area_km2": null
+  },
+  "geography": {
+    "hemisphere": "Nord"
+  },
+  "economy": {
+    "gdp_estimate_usd": null
+  },
+  "politics": {
+    "note": null
+  },
+  "structure": {
+    "continent_dir": "map/world/europe",
+    "country_files": "map/world/europe/*.json"
+  }
+}

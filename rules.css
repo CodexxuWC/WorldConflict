@@ -1,0 +1,115 @@
+/* rules.css — style professionnel et lisible pour la page Règlement */
+
+:root {
+  /* les variables globales sont dans variables.css */
+}
+
+/* Layout */
+.wrap {
+  padding: 28px;
+  display: block;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.logo { width: 56px; height: 56px; flex: 0 0 56px; }
+.brand-text h1 { margin: 0; font-size: 18px; }
+.muted { color: var(--muted); }
+
+/* Layout columns */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Table of contents (aside) */
+.toc {
+  position: sticky;
+  top: 20px;
+  align-self: start;
+  background: transparent;
+}
+
+.toc-head { margin-bottom: 12px; }
+.toc-head h2 { margin: 0 0 8px; font-size: 16px; }
+.toc-search {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: var(--glass);
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* TOC list */
+.toc-list {
+  margin-top: 12px;
+}
+.toc-list a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 6px;
+  transition: background 160ms;
+}
+.toc-list a:hover, .toc-list a:focus {
+  background: rgba(79,70,229,0.06);
+  outline: none;
+}
+.toc-foot { margin-top: 12px; font-size: 13px; color: var(--muted); }
+
+/* Content card */
+.card.rules {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--card-shadow);
+  line-height: 1.6;
+}
+
+/* Headings & sections */
+.card.rules h2 { margin-top: 0; font-size: 20px; }
+.lead { margin: 8px 0 16px; font-size: 14px; color: var(--muted); }
+
+.section { margin-top: 18px; }
+.section h3 { margin: 6px 0 8px; font-size: 16px; }
+.section p { margin: 6px 0; color: var(--text); }
+.section ul { margin: 8px 0 0 20px; color: var(--text); }
+.section li { margin-bottom: 8px; }
+
+/* Small utilities */
+.btn {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.btn-small { font-size: 13px; }
+
+/* Responsive */
+@media (max-width: 980px) {
+  .layout { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .card.rules { padding: 18px; }
+  .header { gap: 10px; }
+}

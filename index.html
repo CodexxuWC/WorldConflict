@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WorldConflict — Connexion</title>
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="brand">
+        <!-- Simple SVG logo -->
+        <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#4f46e5" />
+              <stop offset="100%" stop-color="#06b6d4" />
+            </linearGradient>
+          </defs>
+          <rect rx="10" width="48" height="48" fill="url(#g)" />
+          <path d="M12 16c6-6 24 0 24 0s-6 12-12 18S12 16 12 16z" fill="#0f172a" opacity="0.08"/>
+          <path d="M16 20c4-4 12 0 12 0s-3 6-6 9-10-9-6-9z" fill="#fff" opacity="0.9"/>
+        </svg>
+        <div class="brand-text">
+          <h1>WorldConflict</h1>
+          <p class="tag">Serveur · Jeu · Communauté</p>
+        </div>
+      </div><div class="hero-illustration" aria-hidden="true">
+    <div class="cards">
+      <div class="card card-1"></div>
+      <div class="card card-2"></div>
+      <div class="card card-3"></div>
+    </div>
+  </div>
+</section>
+
+<section class="auth">
+  <form id="loginForm" class="card form" novalidate>
+    <h2>Connexion</h2>
+    <p class="muted">Connecte-toi pour rejoindre ton serveur WorldConflict</p>
+
+    <label class="field">
+      <span class="label">Email ou nom d'utilisateur</span>
+      <input id="userInput" name="user" type="text" inputmode="email" autocomplete="username" required />
+    </label>
+
+    <label class="field">
+      <span class="label">Mot de passe</span>
+      <div class="passwrap">
+        <input id="passwordInput" name="password" type="password" autocomplete="current-password" required minlength="6" />
+        <button type="button" id="togglePassword" aria-label="Afficher le mot de passe">👁️</button>
+      </div>
+    </label>
+
+    <div class="row between">
+      <label class="checkbox">
+        <input type="checkbox" name="remember" /> <span>Se souvenir</span>
+      </label>
+      <a class="link" href="#">Mot de passe oublié ?</a>
+    </div>
+
+    <button class="btn primary" type="submit">Se connecter</button>
+
+    <div class="sep"><span>OU</span></div>
+
+    <button type="button" class="btn ghost" id="createAccount">Créer un compte</button>
+
+    <p class="meta muted">En te connectant, tu acceptes notre règlement.</p>
+  </form>
+
+  <footer class="legal">
+    <p>© <span id="year"></span> WorldConflict</p>
+  </footer>
+</section>
+<script src="utils.js" defer></script>
+<script src="index.js" defer></script>
+</body>
+</html>

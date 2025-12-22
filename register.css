@@ -1,0 +1,84 @@
+:root {
+  --bg: #0b1020;
+  --surface: #0f1724;
+  --muted: #9aa4b2;
+  --accent1: #4f46e5;
+  --accent2: #06b6d4;
+  --glass: rgba(255,255,255,0.04);
+  --card-shadow: 0 8px 26px rgba(2,6,23,0.6);
+  --radius: 12px;
+  --radius-sm: 10px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: #e6eef8;
+  font-family: inherit;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+.register-box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 30px;
+  box-shadow: var(--card-shadow);
+}
+
+h1 {
+  text-align: center;
+  font-size: 1.8em;
+  color: #fff;
+  margin-bottom: 25px;
+}
+
+form { display: flex; flex-direction: column; gap: 15px; }
+
+label { font-size: 0.9em; color: var(--muted); }
+input {
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.03);
+  color: inherit;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+input:focus { border-color: rgba(79,70,229,0.6); }
+
+.password-box { display: flex; align-items: center; gap: 8px; }
+.password-box input { flex: 1; }
+.password-box button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2em; }
+.password-box button:hover { color: #fff; }
+
+.btn.primary {
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  border: none;
+  color: #fff;
+  padding: 12px;
+  font-size: 1em;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn.primary:hover { opacity: 0.9; }
+
+.back-login { text-align: center; margin-top: 10px; font-size: 0.9em; }
+.back-login a { color: var(--accent2); text-decoration: none; }
+.back-login a:hover { text-decoration: underline; }
+
+footer { text-align: center; color: var(--muted); font-size: 0.8em; margin-top: 15px; }
+
+@media (max-width: 480px) { .register-box { padding: 20px; } h1 { font-size: 1.5em; } }
+.rules-link { color: var(--accent2); text-decoration: underline; }
+.rules-link:hover { color: #00cfff; }

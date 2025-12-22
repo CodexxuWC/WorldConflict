@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Guerres</title>
+
+  <!-- Project variables + global CSS (use the project's shared variables only) -->
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="guerre.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="page-header">
+      <div>
+        <div class="title">Guerres</div>
+        <div class="muted">Surveille et gère les conflits actifs</div>
+      </div>
+
+      <div class="header-right">
+        <div class="mini">Mode : <strong id="modeLabel">Lecture</strong></div>
+        <button id="refreshBtn" class="btn" title="Rafraîchir">⟳ Rafraîchir</button>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <section class="panel list-panel">
+        <div class="panel-row">
+          <h2>Conflits actifs</h2>
+          <div class="controls">
+            <input id="searchInput" placeholder="Rechercher une guerre ou un pays..." aria-label="Recherche guerre">
+            <button id="declareBtn" class="btn btn-primary" title="Déclarer une guerre">Déclarer</button>
+          </div>
+        </div>
+
+        <div id="warList" class="war-list">
+          <div class="empty">Aucun conflit actif pour l'instant.</div>
+        </div>
+      </section>
+
+      <aside class="panel detail-panel" aria-label="Détails de la guerre">
+        <h3>Détails</h3>
+        <div id="warDetails" class="mini">Sélectionne un conflit pour voir les détails.</div>
+
+        <div class="action-row">
+          <button id="toceaseBtn" class="btn" disabled>Proposer cessez-le-feu</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigation">
+    <button id="nav-chat" class="nav-btn" title="Chat">Chat</button>
+    <button id="nav-lobby" class="nav-btn" title="Lobby">Lobby</button>
+    <button id="nav-map" class="nav-btn" title="Carte">Carte</button>
+    <button id="nav-guerre" class="nav-btn active" title="Guerres">Guerres</button>
+    <button id="nav-profile" class="nav-btn" title="Profil">Profil</button>
+  </nav>
+
+  <div id="toast" class="wc-toast visually-hidden" role="status" aria-live="polite"></div>
+
+  <script src="utils.js" defer></script>
+  <script src="guerre.js" defer></script>
+</body>
+</html>

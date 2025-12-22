@@ -1,0 +1,49 @@
+[
+  {
+    "username": "Aaa",
+    "email": "a@",
+    "password": "891cbbd164d22323b47ef94a2d9929ded5925fde77996b1c104a346eabec41af",
+    "rp": {
+      "joined": false
+    },
+    "createdAt": "2025-11-27T16:03:44.145Z"
+  },
+  {
+    "username": "Aaaa",
+    "email": "yanisbellahsene5@gmail.com",
+    "password": "487e11ab6d0c4ebd1a31d65cd922e0bcf2f9ef8fa0b91a244d6b445fc9eec670",
+    "rp": {
+      "joined": true,
+      "country_id": "algeria",
+      "country_name": "Algeria",
+      "role": "leader",
+      "displayName": "Yanis",
+      "joinedAt": "2025-11-27T16:35:51.796Z"
+    },
+    "createdAt": "2025-11-27T16:35:30.436Z"
+  },
+  {
+    "username": "Tonpseudo",
+    "email": "i@gmail.com",
+    "password": "c176a0b5014890767e8d15ad8b83c20b3f3a2fbc34717b7f3fb2eaeedfeb0746",
+    "rp": {
+      "joined": true,
+      "country_id": "algeria",
+      "country_name": "Algeria",
+      "role": "citizen",
+      "displayName": null,
+      "joinedAt": "2025-11-29T08:44:10.241Z",
+      "job": "journalist"
+    },
+    "createdAt": "2025-11-29T08:43:46.664Z"
+  },
+  {
+    "username": "New",
+    "email": "Test@gmail.com",
+    "password": "487e11ab6d0c4ebd1a31d65cd922e0bcf2f9ef8fa0b91a244d6b445fc9eec670",
+    "rp": {
+      "joined": false
+    },
+    "createdAt": "2025-12-04T15:36:35.530Z"
+  }
+]

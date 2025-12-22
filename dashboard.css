@@ -1,0 +1,195 @@
+/* dashboard.css — style professionnel, cohérent avec variables.css */
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--bg);
+  color: var(--text);
+  position: relative;
+}
+
+/* Header */
+.dc-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding: 14px 18px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.icon-btn {
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.03);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow: var(--card-shadow);
+}
+.icon-btn:active { transform: translateY(1px); }
+
+.icon-btn .burger {
+  width:18px;
+  height:2px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  box-shadow: 0 -6px 0 0 linear-gradient(90deg, var(--accent1), var(--accent2)), 0 6px 0 0 linear-gradient(90deg, var(--accent1), var(--accent2));
+  display:block;
+}
+
+.dc-title {
+  text-align:center;
+  flex:1;
+}
+.dc-title h1 {
+  margin:0;
+  font-size:20px;
+  letter-spacing:0.6px;
+}
+.dc-title .small { font-size:12px; }
+
+/* Side panels */
+.side-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 86%;
+  background: var(--surface);
+  box-shadow: 0 20px 40px rgba(2,6,23,0.7);
+  padding:16px;
+  transform: translateX(-110%);
+  transition: transform 260ms ease;
+  z-index: 80;
+  overflow-y: auto;
+}
+.side-panel.right { right: 0; left: auto; transform: translateX(110%); }
+.side-panel.left.open { transform: translateX(0); left: 0; }
+.side-panel.right.open { transform: translateX(0); right: 0; }
+
+.panel-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+}
+.panel-header h3 { margin:0; }
+.close-panel {
+  background:transparent;
+  border:0;
+  color:var(--muted);
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* panels contents */
+.panel-nav button,
+.actions-list button {
+  display:block;
+  width:100%;
+  text-align:left;
+  margin:6px 0;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.03);
+  background:transparent;
+  color:var(--text);
+  cursor:pointer;
+}
+.panel-foot {
+  margin-top:16px;
+  color:var(--muted);
+}
+
+/* Main area */
+.dc-main {
+  max-width:1100px;
+  margin: 12px auto 80px;
+  padding: 0 16px;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* Hero / cards */
+.hero-card {
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+}
+.hero-left { flex: 1 1 60%; }
+.hero-right { width:320px; max-width:35%; min-width:240px; }
+
+.card.surface {
+  padding:14px;
+  border-radius:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));
+  box-shadow: var(--card-shadow);
+}
+
+/* quick info */
+.quick-info {
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+.qi-card {
+  background: rgba(255,255,255,0.02);
+  border-radius:10px;
+  padding:10px;
+  min-width:120px;
+  flex: 1 1 120px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.qi-title { font-size:12px; color:var(--muted); }
+.qi-value { font-weight:700; margin-top:6px; }
+
+/* feed */
+.card.feed { padding:14px; border-radius:12px; box-shadow: var(--card-shadow); }
+.feed-list { min-height:48px; }
+
+/* bottom nav */
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 18px;
+  display:flex;
+  gap:8px;
+  background: transparent;
+  z-index: 90;
+}
+.nav-btn {
+  width:64px;
+  height:64px;
+  border-radius:18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.002));
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  cursor:pointer;
+}
+.nav-btn span { font-size:11px; color:var(--muted); }
+.nav-btn.active { box-shadow: 0 10px 30px rgba(79,70,229,0.12); border-radius:16px; }
+
+/* responsive */
+@media (max-width:900px) {
+  .hero-card { flex-direction:column; }
+  .hero-right { width:100%; max-width:100%; }
+  .side-panel { width: 86%; }
+  .nav-btn { width:56px; height:56px; }
+}

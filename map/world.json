@@ -1,0 +1,85 @@
+{
+  "name": "WorldConflict — World Map",
+  "version": "1.0",
+  "generated_by": "assistant",
+  "last_update": "2025-11-01T00:00:00Z",
+  "description": "Fichier racine contenant les métadonnées globales du monde et l'index des continents. Les données détaillées se trouvent dans map/world/{continent}.json et sous-dossiers.",
+  "statistics": {
+    "total_population_estimate": 8150000000,
+    "total_area_km2": 510072000,
+    "total_countries_estimate": 195,
+    "continents_count": 6
+  },
+  "continents_index": {
+    "Europe": {
+      "file": "world/europe.json",
+      "population_estimate": 750000000,
+      "area_km2": 10180000,
+      "countries_count_estimate": 44
+    },
+    "Asia": {
+      "file": "world/asia.json",
+      "population_estimate": 4650000000,
+      "area_km2": 44579000,
+      "countries_count_estimate": 50
+    },
+    "Africa": {
+      "file": "world/africa.json",
+      "population_estimate": 1400000000,
+      "area_km2": 30370000,
+      "countries_count_estimate": 54
+    },
+    "Americas": {
+      "file": "world/americas.json",
+      "population_estimate": 1050000000,
+      "area_km2": 42000000,
+      "countries_count_estimate": 35
+    },
+    "Oceania": {
+      "file": "world/oceania.json",
+      "population_estimate": 43000000,
+      "area_km2": 8600000,
+      "countries_count_estimate": 14
+    },
+    "Antarctica": {
+      "file": "world/antarctica.json",
+      "population_estimate": 0,
+      "area_km2": 14000000,
+      "countries_count_estimate": 0
+    }
+  },
+  "structure": {
+    "root_dir": "map",
+    "world_dir": "map/world",
+    "levels": [
+      "continent",
+      "country",
+      "region",
+      "city",
+      "district",
+      "building"
+    ],
+    "file_naming_convention": "{level}/{name}.json (ex: world/europe.json, world/europe/france.json, world/europe/france/ile-de-france.json)"
+  },
+  "defaults": {
+    "coord_system": "WGS84",
+    "time_zone_default": "UTC",
+    "currency_reference": "USD",
+    "date_format": "YYYY-MM-DDTHH:mm:ssZ"
+  },
+  "behavior_notes": {
+    "lazy_load": "Client/serveur doit charger seulement les fichiers nécessaires (continent -> country -> region) pour économiser mémoire.",
+    "dynamic_updates": "Les fichiers JSON sont modifiables par le moteur (/engine). Chaque changement doit écrire un champ last_update avec horodatage ISO.",
+    "authority": "Les entités (pays, régions) pourront avoir un champ 'authority' pointant vers un user id (ex: dirigeant) ou null.",
+    "security": "Ne jamais exposer les endpoints de modification sans authentification serveur. En local prototype, engine écrit directement dans map/*."
+  },
+  "example_usage": {
+    "get_continent_file": "map/world/europe.json",
+    "get_country_file": "map/world/europe/france.json",
+    "get_region_file": "map/world/europe/france/ile-de-france.json"
+  },
+  "notes_for_dev": {
+    "create_script_suggestion": "Un script Node (setup_map.js) peut générer l'arborescence initiale et des fichiers exemples pour chaque continent.",
+    "engine_integration": "Les scripts de l'engine doivent valider et verrouiller les fichiers avant écriture pour éviter les corruptions concurrentes."
+  }
+}

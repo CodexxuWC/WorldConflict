@@ -1,0 +1,57 @@
+:root{
+  --bg:#0f1720;
+  --panel:#0b1220;
+  --muted:#9aa4b2;
+  --accent:#1f8feb;
+  --glass: rgba(255,255,255,0.04);
+  --radius:12px;
+  --gap:12px;
+  --maxw:1100px;
+}
+
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:#e6eef6}
+.shell{max-width:var(--maxw);margin:18px auto;padding:18px;}
+.map-header{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.map-header .title{font-size:18px;font-weight:600}
+.map-header .muted{color:var(--muted);font-size:13px}
+.header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.mini{font-size:12px;color:var(--muted)}
+
+/* map area */
+.map-wrapper{display:grid;grid-template-columns:1fr 320px;gap:14px;min-height:72vh}
+#map{width:100%;height:72vh;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,0.6);overflow:hidden}
+
+/* side panel */
+.panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,0.45)}
+.panel h3{margin:0 0 8px 0;font-size:16px}
+.panel .muted{color:var(--muted);font-size:13px}
+
+.country-list{max-height:44vh;overflow:auto;margin-top:8px;border-radius:8px;padding:6px;background:var(--glass)}
+.country-item{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;cursor:pointer}
+.country-item:hover{background:rgba(255,255,255,0.02)}
+.country-name{font-weight:600}
+.country-meta{font-size:12px;color:var(--muted)}
+
+.controls{display:flex;gap:8px;margin-top:10px}
+.btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:#e6eef6;cursor:pointer}
+.btn.primary{background:var(--accent);border:none;color:white}
+.search{display:flex;gap:8px;margin-bottom:6px}
+.search input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+
+.action-row{display:flex;gap:8px;margin-top:12px}
+.action-row .btn{flex:1}
+
+/* responsive */
+@media (max-width:920px){
+  .map-wrapper{grid-template-columns:1fr}
+  .panel{order:2}
+  #map{height:60vh}
+}
+
+/* bottom navigation sync (appearance) */
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;background:rgba(6,10,17,0.85);padding:8px 12px;border-radius:14px;display:flex;gap:8px}
+.bottom-nav .nav-item{border:none;background:transparent;color:var(--muted);padding:8px;border-radius:10px}
+.bottom-nav .nav-item.active{background:rgba(255,255,255,0.03);color:var(--accent)}
+
+/* simple toast */
+#toast{position:fixed;right:18px;bottom:90px;background:#0b1220;padding:10px 12px;border-radius:8px;color:var(--muted);box-shadow:0 6px 18px rgba(0,0,0,0.5)}

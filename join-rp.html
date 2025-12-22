@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Rejoindre le RP</title>
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="join-rp.css">
+</head>
+<body>
+  <main class="wrap container">
+    <section class="card join-card" aria-labelledby="joinTitle">
+      <header class="card-header">
+        <div>
+          <h1 id="joinTitle">Rejoindre le RP</h1>
+          <p class="muted sub">Sélectionne un pays. Le premier membre d'un pays devient automatiquement dirigeant.</p>
+        </div>
+        <div class="header-actions">
+          <a class="btn ghost" href="dashboard.html">Retour</a>
+        </div>
+      </header>
+
+      <form id="joinForm" class="form" novalidate>
+        <!-- Recherche de pays (facultatif) -->
+        <div class="row">
+          <label for="countryFilter" class="label">Rechercher (facultatif)</label>
+
+          <div class="search-wrap" aria-hidden="false">
+            <input id="countryFilter" type="search" class="search-input"
+                   placeholder="Rechercher un pays — tape pour filtrer (facultatif)"
+                   aria-label="Rechercher un pays, champ facultatif" />
+            <button id="countryFilterClear" class="btn ghost small clear-btn" type="button" aria-label="Effacer la recherche" title="Effacer la recherche" hidden>✕</button>
+          </div>
+
+          <div class="hint">Champ de recherche — facultatif. Tu peux aussi sélectionner directement dans la liste.</div>
+        </div>
+
+        <div class="row">
+          <label for="countrySelect" class="label">Pays</label>
+          <select id="countrySelect" class="select" aria-label="Liste des pays" required>
+            <option value="">— Chargement —</option>
+          </select>
+          <small class="muted">Choisis le pays dans la liste (recherche instantanée).</small>
+        </div>
+
+        <div class="row">
+          <label for="displayName" class="label">Nom d'affichage (optionnel)</label>
+          <input id="displayName" class="text-input" placeholder="Pseudo affiché dans le RP" aria-label="Nom d'affichage optionnel" />
+        </div>
+
+        <div id="countryPreview" class="country-preview hidden" aria-live="polite">
+          <div class="cp-left"><div id="cpFlag" class="cp-flag" aria-hidden="true">🌍</div></div>
+          <div class="cp-right">
+            <div class="cp-line" style="display:flex; justify-content:space-between; gap:8px; align-items:center;">
+              <div id="cpName" class="cp-name">—</div>
+              <div id="cpMeta" class="muted cp-meta" aria-hidden="true"></div>
+            </div>
+            <p id="cpDesc" class="muted cp-desc" aria-hidden="true"></p>
+            <div class="cp-stats-row" aria-hidden="true">
+              <span id="cpCode" class="cp-stat">Code —</span>
+              <span id="cpPop" class="cp-stat">Pop —</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <div>
+            <div id="loader" class="loader hidden" aria-hidden="true"><span class="spinner" aria-hidden="true"></span> Envoi…</div>
+            <div id="msg" class="msg" role="status" aria-live="polite"></div>
+          </div>
+          <div class="actions-right">
+            <button id="skipBtn" type="button" class="btn ghost">Plus tard</button>
+            <button id="submitJoin" type="submit" class="btn primary" disabled>Rejoindre le RP</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="utils.js" defer></script>
+  <script src="join-rp.js" defer></script>
+</body>
+</html>

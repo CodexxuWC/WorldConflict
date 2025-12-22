@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Profil</title>
+
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+  <div class="pc-shell container">
+
+    <!-- top-left settings button -->
+    <header class="pc-header">
+      <a id="btnSettings" class="icon-btn" href="settings.html" title="Paramètres (⚙️)">⚙️</a>
+      <div class="pc-title">Profil</div>
+      <div></div>
+    </header>
+
+    <main class="pc-main">
+      <section class="card profile-card">
+        <div class="profile-top">
+          <div id="avatar" class="avatar avatar-xl" aria-hidden="true">WC</div>
+          <div class="profile-meta">
+            <h1 id="usernameDisplay">—</h1>
+            <div id="displayName" class="muted">—</div>
+            <div class="profile-actions">
+              <button id="btnMessage" class="btn btn-ghost small">Message</button>
+              <button id="btnFollow" class="btn btn-ghost small">Suivre</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-body">
+          <dl class="profile-grid">
+            <div><dt>Utilisateur</dt><dd id="profileUser">—</dd></div>
+            <div><dt>E-mail</dt><dd id="profileEmail">—</dd></div>
+            <div><dt>Pays RP</dt><dd id="rpCountry">—</dd></div>
+            <div><dt>Rôle RP</dt><dd id="rpRole">—</dd></div>
+            <div><dt>Nom RP</dt><dd id="rpDisplay">—</dd></div>
+            <div><dt>Inscription</dt><dd id="createdAt">—</dd></div>
+          </dl>
+        </div>
+      </section>
+    </main>
+
+    <!-- bottom nav (identique style à dashboard) -->
+    <nav class="bottom-nav" aria-label="Navigation">
+      <button id="nav-chat" class="nav-btn" title="Chat">Chat</button>
+      <button id="nav-lobby" class="nav-btn" title="Lobby">Lobby</button>
+      <button id="nav-notifs" class="nav-btn" title="Notifications">Notif</button>
+      <button id="nav-profile" class="nav-btn active" title="Profil">Profil</button>
+    </nav>
+
+  </div>
+
+  <script src="utils.js" defer></script>
+  <script src="profile.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "id": "deu",
+  "name": "Germany",
+  "continent": "europe",
+  "metadata": {
+    "created_at": "2025-11-14",
+    "updated_at": null
+  },
+  "government": {
+    "leader": null,
+    "ministers": [],
+    "system": null
+  },
+  "population": null,
+  "economy": {
+    "gdp": 0,
+    "resources": {}
+  },
+  "military": {
+    "active": 0,
+    "reserve": 0,
+    "equipment": {}
+  },
+  "geography": {
+    "area_km2": 0,
+    "major_cities": [],
+    "climate_zones": [],
+    "borders": []
+  },
+  "status": {
+    "occupied": false,
+    "contested": false
+  },
+  "war": {
+    "atWar": true,
+    "wars": [
+      "war_france_germany_1766395261149"
+    ],
+    "warExhaustion": 0.007250237493213994
+  }
+}

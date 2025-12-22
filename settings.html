@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Paramètres</title>
+
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="settings-shell container">
+    <header class="settings-header">
+      <a href="profile.html" class="icon-btn">←</a>
+      <div><h1>Paramètres</h1><div class="muted">Modifier ton profil et ta sécurité</div></div>
+      <div></div>
+    </header>
+
+    <main class="settings-main">
+      <section class="panel">
+        <h2>Profil</h2>
+        <div class="profile-ctrls">
+          <div id="avatarPreview" class="avatar avatar-xl">WC</div>
+          <div class="profile-ctrls-right">
+            <input id="avatarFile" type="file" accept="image/*" class="visually-hidden">
+            <button id="changeAvatar" class="btn btn-ghost small">Changer l'avatar</button>
+            <button id="removeAvatar" class="btn btn-ghost small">Supprimer</button>
+          </div>
+        </div>
+
+        <form id="profileForm">
+          <label class="field">
+            <span class="label">Nom d'affichage</span>
+            <input id="inputDisplayName" class="text-input" autocomplete="name" placeholder="Pseudo affiché">
+          </label>
+
+          <div class="actions-row">
+            <button id="cancelProfile" type="button" class="btn btn-ghost">Annuler</button>
+            <button id="saveProfile" type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" style="margin-top:12px">
+        <h2>Sécurité</h2>
+        <form id="pwdForm">
+          <label class="field">
+            <span class="label">Mot de passe actuel</span>
+            <input id="currentPwd" class="text-input" type="password" autocomplete="current-password">
+          </label>
+          <label class="field">
+            <span class="label">Nouveau mot de passe</span>
+            <input id="newPwd" class="text-input" type="password" autocomplete="new-password">
+          </label>
+          <label class="field">
+            <span class="label">Confirmer</span>
+            <input id="confirmPwd" class="text-input" type="password">
+          </label>
+
+          <div class="actions-row">
+            <button id="cancelPwd" type="button" class="btn btn-ghost">Annuler</button>
+            <button id="savePwd" type="submit" class="btn btn-primary">Mettre à jour</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigation">
+      <button id="nav-chat" class="nav-btn" title="Chat">Chat</button>
+      <button id="nav-lobby" class="nav-btn" title="Lobby">Lobby</button>
+      <button id="nav-notifs" class="nav-btn" title="Notifications">Notif</button>
+      <button id="nav-profile" class="nav-btn" title="Profil">Profil</button>
+    </nav>
+
+    <div id="toast" class="wc-toast visually-hidden" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="utils.js" defer></script>
+  <script src="settings.js" defer></script>
+</body>
+</html>

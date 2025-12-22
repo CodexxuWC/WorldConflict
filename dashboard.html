@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Lobby</title>
+
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- Header -->
+    <header class="dc-header">
+      <button id="menuBtnLeft" class="icon-btn" aria-label="Essentiels (menu)"><span class="burger"></span></button>
+
+      <div class="dc-title">
+        <span class="brand-logo" aria-hidden="true">🌐</span>
+        <h1>WorldConflict</h1>
+        <p class="muted small">Lobby principal</p>
+      </div>
+
+      <button id="menuBtnRight" class="icon-btn" aria-label="Actions (menu)"><span class="dotdot"></span></button>
+    </header>
+
+    <!-- Left panel (info essentials) -->
+    <aside id="leftPanel" class="side-panel left" aria-hidden="true">
+      <div class="panel-header">
+        <h3>Essentiels</h3>
+        <button class="close-panel" data-target="leftPanel" aria-label="Fermer">✕</button>
+      </div>
+      <nav class="panel-nav">
+        <button data-action="open-map">Carte mondiale</button>
+        <button data-action="recent-wars">Guerres récentes</button>
+        <button data-action="rules">Règlement</button>
+        <button data-action="server-status">État du serveur</button>
+      </nav>
+      <div class="panel-foot muted" id="leftPanelFoot">Chargement...</div>
+    </aside>
+
+    <!-- Right panel (role actions) -->
+    <aside id="rightPanel" class="side-panel right" aria-hidden="true">
+      <div class="panel-header">
+        <h3>Actions</h3>
+        <button class="close-panel" data-target="rightPanel" aria-label="Fermer">✕</button>
+      </div>
+
+      <div id="actionsList" class="actions-list">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="panel-foot">
+        <button id="logoutBtn" class="btn ghost full">Se déconnecter</button>
+      </div>
+    </aside>
+
+    <!-- Main content / Lobby -->
+    <main id="mainArea" class="dc-main">
+      <section class="hero-card">
+        <div class="hero-left">
+          <h2 id="welcome">Vérification de la session…</h2>
+          <p id="subtitle" class="muted">Préparation du lobby...</p>
+
+          <div id="quickInfo" class="quick-info">
+            <!-- small cards -->
+            <div class="qi-card">
+              <div class="qi-title">Rôle</div>
+              <div id="qiRole" class="qi-value">—</div>
+            </div>
+            <div class="qi-card">
+              <div class="qi-title">Pays</div>
+              <div id="qiCountry" class="qi-value">—</div>
+            </div>
+            <div class="qi-card">
+              <div class="qi-title">Membres dans le pays</div>
+              <div id="qiMembers" class="qi-value">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right" id="heroRight">
+          <!-- placeholder / quick actions -->
+          <div class="card surface">
+            <h4>Accès rapide</h4>
+            <div class="quick-actions">
+              <button data-action="chat" class="btn ghost full">Aller au tchat</button>
+              <button data-action="notifications" class="btn ghost full">Notifications</button>
+              <button data-action="profile" class="btn ghost full">Profil</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- dynamic zone for logs / news -->
+      <section id="feed" class="card feed">
+        <h3>Fil RP</h3>
+        <div id="feedList" class="feed-list muted">Aucun événement pour l'instant.</div>
+      </section>
+    </main>
+
+    <!-- Bottom navigation -->
+    <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+      <button class="nav-btn" data-to="chat.html" title="Tchat">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h16v10H7l-3 3z"/></svg>
+        <span>Chat</span>
+      </button>
+
+      <button class="nav-btn active" data-to="dashboard.html" title="Lobby">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2L2 7v13h20V7z"/></svg>
+        <span>Lobby</span>
+      </button>
+
+      <button class="nav-btn" data-to="notifications.html" title="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 22a2 2 0 0 0 2-2H10a2 2 0 0 0 2 2zM18 16v-5a6 6 0 1 0-12 0v5l-2 2v1h16v-1z"/></svg>
+        <span>Notifs</span>
+      </button>
+
+      <button class="nav-btn" data-to="profile.html" title="Profil">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5 0-9 3-9 6v2h18v-2c0-3-4-6-9-6z"/></svg>
+        <span>Profil</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="dashboard.js" defer></script>
+</body>
+</html>

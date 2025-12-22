@@ -1,0 +1,28 @@
+{
+  "name": "North America",
+  "slug": "north_america",
+  "type": "continent",
+  "version": "1.0",
+  "last_update": "2025-11-01T00:00:00Z",
+  "meta": {
+    "source": "WorldConflict-minimal",
+    "auto_generated": false
+  },
+  "statistics": {
+    "population_estimate": null,
+    "area_km2": null
+  },
+  "geography": {
+    "hemisphere": "Nord"
+  },
+  "economy": {
+    "gdp_estimate_usd": null
+  },
+  "politics": {
+    "note": null
+  },
+  "structure": {
+    "continent_dir": "map/world/north_america",
+    "country_files": "map/world/north_america/*.json"
+  }
+}

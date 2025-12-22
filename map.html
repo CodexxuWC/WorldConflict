@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorldConflict — Carte interactive</title>
+
+  <!-- Leaflet CSS (CDN) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-sA+4dGkvFv0vL1JQqg6V8n0aYf2L0a1f9v+7G6u0XQM=" crossorigin=""/>
+
+  <!-- Project CSS -->
+  <link rel="stylesheet" href="map.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="map-header">
+      <div>
+        <div class="title">Carte — WorldConflict</div>
+        <div class="muted">Visualise les pays, membres et actions RP</div>
+      </div>
+
+      <div class="header-right">
+        <div class="mini">Mode : <strong id="modeLabel">Lecture</strong></div>
+        <button id="refreshBtn" class="btn" title="Rafraîchir">⟳ Rafraîchir</button>
+      </div>
+    </header>
+
+    <div class="map-wrapper">
+      <div id="map" class="panel" aria-label="Carte du monde"></div>
+
+      <aside class="panel" aria-label="Panneau latéral">
+        <h3>Contrôles</h3>
+        <div class="search">
+          <input id="searchInput" placeholder="Rechercher un pays..." aria-label="Recherche pays">
+          <button id="searchBtn" class="btn">Rechercher</button>
+        </div>
+
+        <div class="controls">
+          <button id="zoomIn" class="btn" title="Zoomer">＋</button>
+          <button id="zoomOut" class="btn" title="Dézoomer">−</button>
+          <button id="fitAll" class="btn" title="Tout voir">Tout voir</button>
+        </div>
+
+        <h3 style="margin-top:12px">Pays</h3>
+        <div id="countryList" class="country-list" role="list"></div>
+
+        <h3 style="margin-top:12px">Détails</h3>
+        <div id="countryDetails" class="mini">Sélectionne un pays sur la carte ou dans la liste.</div>
+
+        <div class="action-row">
+          <button id="joinBtn" class="btn primary" disabled>Rejoindre</button>
+          <button id="actionsBtn" class="btn" disabled>Actions</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-hidden="true">
+    <button id="navChat" class="nav-item">Chat</button>
+    <button id="navLobby" class="nav-item">Lobby</button>
+    <button id="navMap" class="nav-item active">Carte</button>
+    <button id="navProfile" class="nav-item">Profil</button>
+  </nav>
+
+  <div id="toast" aria-live="polite" hidden></div>
+
+  <!-- Leaflet JS (CDN) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-o9N1j8gGq7y+9g+0v0bS6m7jG3wQ1q6o2KpG8g8g4NU=" crossorigin="" defer></script>
+
+  <!-- App JS -->
+  <script src="map.js" defer></script>
+</body>
+</html>

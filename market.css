@@ -1,0 +1,226 @@
+/* market.css — refonte totale pour coller au style global du projet
+   Utilise les variables définies dans index.css (accent1/2, surface, glass, card-shadow, radius).
+   Responsive — 3 colonnes sur desktop, empilement sur mobile.
+*/
+
+/* layout container similaire aux autres pages */
+.container {
+  max-width: 980px;
+  margin: 18px auto;
+  padding: 0 16px;
+}
+
+/* shell fallback (présent dans market.html) */
+.shell {
+  width: 100%;
+  max-width: 980px;
+  margin: 18px auto;
+  padding: 0 16px 120px; /* espace pour bottom-nav */
+  box-sizing: border-box;
+  color: inherit;
+}
+
+/* header */
+.market-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.market-header .title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text, #e6eef8);
+}
+
+.market-header .muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* page grid: left catalog, center market panel, right snapshot */
+.market-wrapper {
+  display: grid;
+  grid-template-columns: 300px 1fr 320px;
+  gap: 16px;
+  align-items: start;
+}
+
+/* Panels — reuse project card style */
+.panel {
+  padding: 14px;
+  border-radius: var(--radius, 12px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.003));
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: var(--card-shadow);
+  color: inherit;
+}
+
+/* Catalog (left) */
+.catalog .search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.catalog input[type="text"],
+.catalog input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.03);
+  color: inherit;
+  font-size: 14px;
+}
+
+.item-list {
+  max-height: calc(100vh - 260px);
+  overflow: auto;
+  display: grid;
+  gap: 8px;
+  padding-right: 6px;
+}
+
+/* item button matches global button aesthetics */
+.item-list button {
+  text-align: left;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.02);
+  background: linear-gradient(180deg, rgba(255,255,255,0.006), rgba(255,255,255,0.002));
+  color: inherit;
+  cursor: pointer;
+  font-weight: 700;
+}
+.item-list button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(79,70,229,0.06);
+}
+
+/* center market panel */
+.market-panel-inner { display: flex; flex-direction: column; gap: 12px; }
+
+.selected-item {
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+/* form fields consistent with other pages */
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+.label { font-size: 13px; color: var(--muted); }
+.text-input, input[type="number"], input[type="text"] {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.03);
+  color: inherit;
+  font-size: 14px;
+}
+
+/* two columns form areas */
+.two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* quote/result area */
+.quote-row { display:flex; gap: 12px; align-items:center; }
+.quote-result { font-weight:800; color:var(--text); }
+
+/* trade controls */
+.trade-controls { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+.trade-controls .two-cols { grid-template-columns: 1fr 1fr; }
+
+/* button variants reusing global style */
+.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 0;
+  font-weight: 800;
+}
+.btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.04); color: inherit; }
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(79,70,229,0.14);
+}
+.btn-success {
+  background: linear-gradient(90deg, #059669, #10b981);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(5,102,93,0.12);
+}
+.btn-danger {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  color: #fff;
+}
+
+/* price breakdown panel */
+#priceBreakdown { padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.02); }
+#breakdownPre { white-space: pre-wrap; font-size: 13px; color: var(--muted); }
+
+/* trades (right) */
+.trades-panel .trade-list { display:grid; gap:8px; max-height: calc(100vh - 270px); overflow:auto; padding-right:6px; }
+.trade-item {
+  padding: 10px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.006), rgba(255,255,255,0.002));
+  border: 1px solid rgba(255,255,255,0.02);
+  font-size: 14px;
+}
+.trade-item .muted { color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+/* small utilities */
+.muted { color: var(--muted); font-size: 13px; }
+.mini { font-size: 12px; color: var(--muted); }
+
+/* visually-hidden reuse */
+.visually-hidden { display: none !important; }
+
+/* bottom-nav — match profile/settings style exactly */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 60;
+  pointer-events: auto;
+}
+.nav-btn {
+  min-width: 84px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.004));
+  color: var(--muted);
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.nav-btn.active {
+  color: #fff;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(79,70,229,0.18);
+}
+
+/* responsive */
+@media (max-width: 980px) {
+  .market-wrapper { grid-template-columns: 1fr; }
+  .catalog { order: 2; }
+  .market-panel { order: 1; }
+  .trades-panel { order: 3; }
+  .item-list { max-height: 220px; }
+  .two-cols { grid-template-columns: 1fr; }
+}
+
+/* small screens final tweaks */
+@media (max-width: 420px) {
+  .selected-item { font-size: 14px; }
+  .market-header { padding: 6px 0; }
+}

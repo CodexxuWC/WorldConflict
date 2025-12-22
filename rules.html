@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WorldConflict — Règlement</title>
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="rules.css">
+</head>
+<body>
+  <main class="wrap container">
+    <header class="header" role="banner">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="g2" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#4f46e5" />
+              <stop offset="100%" stop-color="#06b6d4" />
+            </linearGradient>
+          </defs>
+          <rect rx="10" width="48" height="48" fill="url(#g2)" />
+          <path d="M12 16c6-6 24 0 24 0s-6 12-12 18S12 16 12 16z" fill="#0f172a" opacity="0.06"/>
+          <path d="M16 20c4-4 12 0 12 0s-3 6-6 9-10-9-6-9z" fill="#fff" opacity="0.9"/>
+        </svg>
+
+        <div class="brand-text">
+          <h1>WorldConflict</h1>
+          <p class="muted">Règlement officiel — informations et bonnes pratiques</p>
+        </div>
+      </div>
+
+      <nav class="header-actions" aria-label="Actions">
+        <a class="link back" href="index.html">← Retour</a>
+        <button id="printBtn" class="btn btn-small" title="Imprimer la page">Imprimer</button>
+      </nav>
+    </header>
+
+    <div class="layout">
+      <aside class="toc" aria-labelledby="tocTitle">
+        <div class="toc-head">
+          <h2 id="tocTitle">Sommaire</h2>
+          <input id="rulesSearch" class="toc-search" type="search" placeholder="Rechercher dans le règlement…" aria-label="Rechercher le règlement">
+        </div>
+        <nav id="tocList" class="toc-list" role="navigation" aria-label="Table des matières"></nav>
+        <div class="toc-foot muted">© <span id="year"></span> WorldConflict</div>
+      </aside>
+
+      <article class="card rules content" id="rulesContent">
+        <h2>Règlement — Conditions et comportements</h2>
+        <p class="lead muted">Lis attentivement : ces règles encadrent le fonctionnement et la sécurité de la communauté. Cette page est informative — aucune action d'acceptation n'est requise ici.</p>
+
+        <section class="section" id="respect">
+          <h3>1. Respect et comportement</h3>
+          <p>La communauté repose sur le respect mutuel. Comportements proscrits :</p>
+          <ul>
+            <li>Insultes, harcèlement, menaces ou attaques personnelles.</li>
+            <li>Discours haineux, racisme, sexisme ou discriminations.</li>
+            <li>Spam, trolling, doxxing ou perturbation volontaire du RP.</li>
+          </ul>
+        </section>
+
+        <section class="section" id="chat-content">
+          <h3>2. Chat et contenu</h3>
+          <p>Consignes relatives aux messages et aux contenus partagés :</p>
+          <ul>
+            <li>Ne publie pas de contenu NSFW, violent ou choquant dans les espaces publics.</li>
+            <li>Ne partage pas d’informations personnelles tierces sans consentement.</li>
+            <li>Respecte le thème et les règles propres à chaque canal RP.</li>
+          </ul>
+        </section>
+
+        <section class="section" id="game-fairplay">
+          <h3>3. Jeu et fair-play</h3>
+          <ul>
+            <li>Toute triche, exploitation de bug, macro ou hack peut conduire à un bannissement immédiat.</li>
+            <li>Respecte les décisions des administrateurs et des instances RP compétentes.</li>
+            <li>Les litiges de jeu sont gérés par l’équipe selon les règles du serveur.</li>
+          </ul>
+        </section>
+
+        <section class="section" id="sanctions">
+          <h3>4. Sanctions</h3>
+          <p>Processus général : avertissement → suspension temporaire → bannissement définitif selon la gravité et la répétition.</p>
+          <ul>
+            <li>Les modérateurs appliquent les sanctions après examen.</li>
+            <li>Les décisions peuvent être révisées en cas d’appel ou d’éléments nouveaux.</li>
+          </ul>
+        </section>
+
+        <section class="section" id="security">
+          <h3>5. Sécurité & confidentialité</h3>
+          <ul>
+            <li>Utilise un mot de passe fort et ne le partage jamais.</li>
+            <li>Active la double authentification si proposée.</li>
+            <li>Signale immédiatement tout comportement suspect ou vulnérabilité aux modérateurs.</li>
+          </ul>
+        </section>
+
+        <section class="section" id="moderation-appeal">
+          <h3>6. Contestation & procédure</h3>
+          <p>Si tu souhaites contester une décision :</p>
+          <ul>
+            <li>Contacte un administrateur en fournissant les éléments pertinents (captures, logs).</li>
+            <li>La procédure d’appel peut prendre du temps : sois patient et factuel.</li>
+          </ul>
+        </section>
+
+        <section class="section" id="legal">
+          <h3>7. Données & conformité</h3>
+          <p>Respect de la confidentialité :</p>
+          <ul>
+            <li>Les demandes de suppression ou d’export de données seront traitées conformément à la législation applicable.</li>
+            <li>Ne partage pas de contenus protégés par le droit d’auteur sans autorisation.</li>
+          </ul>
+        </section>
+
+        <div class="meta muted" style="margin-top:18px;">
+          <p>Document maintenu par l’équipe WorldConflict. Dernière mise à jour : <time datetime="">—</time></p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script src="rules.js" defer></script>
+</body>
+</html>

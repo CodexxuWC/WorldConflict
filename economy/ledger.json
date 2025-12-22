@@ -1,0 +1,22 @@
+[
+  {
+    "id": "tx_mjfhoci5_jt8",
+    "actor": "user123",
+    "country": "fra",
+    "item": "oil",
+    "qty": 100,
+    "price_per_unit": 180,
+    "total_price": 18000,
+    "side": "buy",
+    "breakdown": {
+      "base": 60,
+      "supplyFactor": 1,
+      "demandFactor": 1,
+      "qtyImpact": 3,
+      "trendFactor": 1,
+      "countryFactor": 1,
+      "scarcityFactor": 1
+    },
+    "ts": 1766307156557
+  }
+]
