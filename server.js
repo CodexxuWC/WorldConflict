@@ -1,4 +1,4 @@
-// server.js (ESM) — backend amélioré & plus professionnel (dev)
+// server.js (ESM) — backend amélioré & plus professionnel (fix sessions behind proxy)
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
@@ -16,7 +16,10 @@ const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 
 const app = express();
-app.use('/api/market', marketApi);
+
+// Important: trust the first proxy (Render, Heroku, etc.) so req.ip and req.secure are correct
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET || "dev-worldconflict-secret";
 
@@ -96,7 +99,7 @@ function findUserByLogin(id) {
   return users.find((u) => normalize(u.username) === n || normalize(u.email) === n) || null;
 }
 
-// middlewares
+// middleware setup
 app.use(bodyParser.json({ limit: "2mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
@@ -106,13 +109,17 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production", // only send cookie over HTTPS in production
       httpOnly: true,
       sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24,
     },
+    // default MemoryStore is fine for small hobby projects; replace for production multi-instance setups
   })
 );
+
+// mount APIs that may rely on sessions after session middleware
+app.use('/api/market', marketApi);
 
 app.use(express.static(__dirname));
 
@@ -157,6 +164,22 @@ async function buildCountriesCache() {
   }
 }
 await buildCountriesCache();
+
+// helper to save session then send JSON response (ensures cookie is set)
+function saveSessionAndSend(req, res, payload) {
+  try {
+    if (!req.session) {
+      return res.json(payload);
+    }
+    req.session.save((err) => {
+      if (err) console.warn("session save error:", err);
+      return res.json(payload);
+    });
+  } catch (e) {
+    console.error("saveSessionAndSend error:", e);
+    return res.json(payload);
+  }
+}
 
 // ---------- API ----------
 app.get("/api/countries", (req, res) => {
@@ -209,8 +232,9 @@ app.post("/api/register", async (req, res) => {
     users.push(user);
     await saveUsers();
 
+    // set session and ensure it's saved before responding
     req.session.user = { username: user.username, email: user.email };
-    return res.json({ ok: true });
+    return saveSessionAndSend(req, res, { ok: true });
   } catch (err) {
     console.error("POST /api/register error:", err);
     return res.status(500).json({ ok: false, error: "Erreur serveur" });
@@ -235,7 +259,8 @@ app.post("/api/login", async (req, res) => {
     }
 
     req.session.user = { username: found.username, email: found.email };
-    return res.json({ ok: true, username: found.username, rp: found.rp });
+    // ensure session cookie is saved/emitted before responding
+    return saveSessionAndSend(req, res, { ok: true, username: found.username, rp: found.rp });
   } catch (err) {
     console.error("POST /api/login error:", err);
     return res.status(500).json({ ok: false, error: "Erreur serveur" });
@@ -250,7 +275,13 @@ app.post("/api/logout", (req, res) => {
         console.warn("session destroy err", err);
         return res.status(500).json({ ok: false, error: "Erreur lors de la déconnexion" });
       }
-      res.clearCookie("wc_sid");
+      // clear cookie with same options to ensure deletion
+      res.clearCookie("wc_sid", {
+        path: "/",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
       return res.json({ ok: true });
     });
   } catch (err) {
@@ -301,7 +332,7 @@ app.post("/api/user/join-rp", async (req, res) => {
       };
       await saveUsers();
       req.session.user = { username: user.username, email: user.email };
-      return res.json({ ok: true, rp: user.rp, assigned: "leader" });
+      return saveSessionAndSend(req, res, { ok: true, rp: user.rp, assigned: "leader" });
     } else {
       // others -> pending
       user.rp = {
@@ -314,7 +345,7 @@ app.post("/api/user/join-rp", async (req, res) => {
       };
       await saveUsers();
       req.session.user = { username: user.username, email: user.email };
-      return res.json({ ok: true, rp: user.rp, next: "/choose-role.html" });
+      return saveSessionAndSend(req, res, { ok: true, rp: user.rp, next: "/choose-role.html" });
     }
   } catch (err) {
     console.error("POST /api/user/join-rp:", err);
@@ -349,7 +380,7 @@ app.post("/api/user/assign-role", async (req, res) => {
 
     await saveUsers();
     req.session.user = { username: user.username, email: user.email };
-    return res.json({ ok: true, rp: user.rp });
+    return saveSessionAndSend(req, res, { ok: true, rp: user.rp });
   } catch (err) {
     console.error("POST /api/user/assign-role:", err);
     return res.status(500).json({ ok: false, error: "Erreur serveur" });
@@ -362,7 +393,7 @@ app.use("/api", (req, res) => {
 });
 
 // start
-app.listen(PORT, () => {
-  console.log(`🚀 Backend ESM running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Backend ESM running on port ${PORT} (environment: ${process.env.NODE_ENV || 'development'})`);
   console.log(`Serving static files from: ${__dirname}`);
 });
