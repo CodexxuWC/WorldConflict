@@ -268,73 +268,78 @@
     openModal(`Confirmer : rejoindre ${country_name}${displayName ? ` — sous le nom ${displayName}` : ''} ?`);
   }
 
-  // actual network join request (called after modal confirm)
-  async function performJoin() {
-    if (isSubmitting) return;
-    isSubmitting = true;
-    showLoader(true);
-    enableSubmit(false);
-    setMsg('', 'info');
+async function performJoin() {
+  if (isSubmitting) return;
+  isSubmitting = true;
+  showLoader(true);
+  enableSubmit(false);
+  setMsg('', 'info');
 
-    const sel = countrySelect.selectedOptions?.[0];
-    const country_id = sel?.value?.trim() || null;
-    const country_name = sel?.textContent || null;
-    const displayName = (displayNameInput.value || '').trim() || null;
+  // lire l'option sélectionnée
+  const sel = countrySelect.selectedOptions?.[0];
+  const country_id = sel?.value?.trim() || null;
+  const country_name = sel?.textContent || null;
+  const displayName = (displayNameInput.value || '').trim() || null;
 
-    if (!country_id) {
-      setMsg('Choisis un pays avant de rejoindre le RP.', 'error');
-      showLoader(false);
+  // DEBUG rapide sur mobile
+  console.log('DEBUG performJoin:', { country_id, country_name, displayName });
+  // ou si tu veux une alert pour tester direct sur tel
+  // alert(`country_id=${country_id}\ncountry_name=${country_name}\ndisplayName=${displayName}`);
+
+  if (!country_id) {
+    setMsg('Choisis un pays avant de rejoindre le RP.', 'error');
+    showLoader(false);
+    enableSubmit(true);
+    isSubmitting = false;
+    return;
+  }
+
+  const origText = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) submitBtn.textContent = 'Envoi…';
+
+  try {
+    const r = await apiFetch('/api/user/join-rp', {
+      method: 'POST',
+      body: JSON.stringify({ country_id, country_name, displayName })
+    });
+
+    showLoader(false);
+    isSubmitting = false;
+
+    if (!r.ok) {
+      setMsg('Erreur : ' + (r.error || (r.data && r.data.error) || 'Impossible de rejoindre.'), 'error');
       enableSubmit(true);
-      isSubmitting = false;
+      if (submitBtn) submitBtn.textContent = origText;
       return;
     }
 
-    const origText = submitBtn ? submitBtn.textContent : '';
+    const data = r.data || {};
+    const assigned = data.assigned || r.assigned;
+    const next = data.next || r.next;
 
-    if (submitBtn) submitBtn.textContent = 'Envoi…';
-
-    try {
-      const r = await apiFetch('/api/user/join-rp', {
-        method: 'POST',
-        body: JSON.stringify({ country_id, country_name, displayName })
-      });
-
-      showLoader(false);
-      isSubmitting = false;
-
-      if (!r.ok) {
-        setMsg('Erreur : ' + (r.error || (r.data && r.data.error) || 'Impossible de rejoindre.'), 'error');
-        enableSubmit(true);
-        if (submitBtn) submitBtn.textContent = origText;
-        return;
-      }
-
-      const data = r.data || {};
-      const assigned = data.assigned || r.assigned;
-      const next = data.next || r.next;
-
-      if (assigned === 'leader') {
-        setMsg('Tu es le premier membre — tu es maintenant dirigeant. Redirection…', 'success');
-        setTimeout(() => window.location.href = 'dashboard.html', 700);
-        return;
-      }
-      if (next === '/choose-role.html' || next === 'choose-role') {
-        setMsg('Étape suivante : choisir un rôle — redirection…', 'info');
-        setTimeout(() => window.location.href = '/choose-role.html', 600);
-        return;
-      }
-
-      setMsg('Inscription prise en compte — redirection…', 'success');
+    if (assigned === 'leader') {
+      setMsg('Tu es le premier membre — tu es maintenant dirigeant. Redirection…', 'success');
       setTimeout(() => window.location.href = 'dashboard.html', 700);
-    } catch (err) {
-      console.error(err);
-      showLoader(false);
-      isSubmitting = false;
-      setMsg('Erreur réseau — réessaie plus tard.', 'error');
-      enableSubmit(true);
-      if (submitBtn) submitBtn.textContent = origText;
+      return;
     }
+    if (next === '/choose-role.html' || next === 'choose-role') {
+      setMsg('Étape suivante : choisir un rôle — redirection…', 'info');
+      setTimeout(() => window.location.href = '/choose-role.html', 600);
+      return;
+    }
+
+    setMsg('Inscription prise en compte — redirection…', 'success');
+    setTimeout(() => window.location.href = 'dashboard.html', 700);
+
+  } catch (err) {
+    console.error(err);
+    showLoader(false);
+    isSubmitting = false;
+    setMsg('Erreur réseau — réessaie plus tard.', 'error');
+    enableSubmit(true);
+    if (submitBtn) submitBtn.textContent = origText;
   }
+}
 
   // wire up events
   countryFilter.addEventListener('input', debounce((e) => filterSelect(e.target.value), 180));
