@@ -141,7 +141,9 @@ async function buildCountriesCache() {
           const filePath = path.join(countriesDir, f);
           let parsed = null;
           try { parsed = JSON.parse(await fs.readFile(filePath, "utf8")); } catch (e) { parsed = null; }
-          const id = path.basename(f, ".json");
+          const id = parsed?.id
+            ? String(parsed.id).trim()
+            : path.basename(f, ".json");
           const name = (parsed && (parsed.name || parsed.common)) || id;
           list.push({
             id,
