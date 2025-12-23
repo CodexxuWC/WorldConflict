@@ -1,4 +1,5 @@
 // server.js (ESM) — backend amélioré & plus professionnel (fix sessions behind proxy)
+// Added: email verification (Phase 2) with nodemailer fallback
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
@@ -8,6 +9,7 @@ import fs from "fs/promises";
 import fsSync from "fs";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
 import marketApi from './economy/market_api.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,9 +30,10 @@ const SESSION_SECRET = process.env.SESSION_SECRET || "dev-worldconflict-secret";
 const rate = {
   login: new Map(), // ip -> { count, firstAt }
   checkEmail: new Map(),
+  resendVerify: new Map(),
 };
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 min
-const RATE_LIMIT_MAX = { login: 8, checkEmail: 30 };
+const RATE_LIMIT_MAX = { login: 8, checkEmail: 30, resendVerify: 4 };
 
 function checkRate(map, ip, max) {
   const now = Date.now();
@@ -97,6 +100,55 @@ function findUserByLogin(id) {
   if (!id) return null;
   const n = normalize(id);
   return users.find((u) => normalize(u.username) === n || normalize(u.email) === n) || null;
+}
+
+// --- Email setup (nodemailer) ---
+// Prefer explicit environment variables; fallback to console logger if not set.
+const MAIL_HOST = process.env.MAIL_HOST || process.env.SMTP_HOST || null;
+const MAIL_PORT = process.env.MAIL_PORT ? Number(process.env.MAIL_PORT) : (process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587);
+const MAIL_SECURE = (process.env.MAIL_SECURE === 'true') || false; // true for 465
+const MAIL_USER = process.env.MAIL_USER || process.env.SMTP_USER || null;
+const MAIL_PASS = process.env.MAIL_PASS || process.env.SMTP_PASS || null;
+const BASE_URL = process.env.BASE_URL || `https://worldconflict.onrender.com`;
+
+// Build transporter (real if SMTP info present, otherwise fake that logs)
+let mailer;
+if (MAIL_HOST && MAIL_USER && MAIL_PASS) {
+  try {
+    mailer = nodemailer.createTransport({
+      host: MAIL_HOST,
+      port: MAIL_PORT,
+      secure: MAIL_SECURE,
+      auth: {
+        user: MAIL_USER,
+        pass: MAIL_PASS,
+      },
+    });
+    // verify transporter at startup (best-effort)
+    mailer.verify().then(() => {
+      console.log("Mailer: SMTP transporter ready");
+    }).catch((e) => {
+      console.warn("Mailer: SMTP verify failed:", e && e.message ? e.message : e);
+    });
+  } catch (e) {
+    console.error("Mailer setup failed:", e);
+    mailer = null;
+  }
+}
+
+if (!mailer) {
+  // fallback fake transporter for dev: logs message instead of sending
+  mailer = {
+    sendMail: async (opts) => {
+      console.log("=== Email (dev fallback) ===");
+      console.log("To:", opts.to);
+      console.log("Subject:", opts.subject);
+      if (opts.text) console.log("Text:", opts.text);
+      if (opts.html) console.log("HTML:", opts.html);
+      console.log("============================");
+      return Promise.resolve({ accepted: [opts.to] });
+    }
+  };
 }
 
 // middleware setup
@@ -251,7 +303,7 @@ app.post("/api/check-email", (req, res) => {
   }
 });
 
-// register
+// register (with email verification token + send mail)
 app.post("/api/register", async (req, res) => {
   try {
     const username = safeTrim(req.body?.username || "", 60);
@@ -262,22 +314,61 @@ app.post("/api/register", async (req, res) => {
     if (findUserByEmail(email)) return res.json({ ok: false, error: "Email déjà utilisé" });
     if (findUserByUsername(username)) return res.json({ ok: false, error: "Nom d’utilisateur déjà pris" });
 
-const password_hash = await bcrypt.hash(password, 12);
+    const password_hash = await bcrypt.hash(password, 12);
 
-const user = {
-  username,
-  email,
-  password_hash,
-  email_verified: false, // 🔒 PHASE 2
-  rp: { joined: false },
-  createdAt: new Date().toISOString(),
-};
+    // email verification token (Phase 2)
+    const emailToken = crypto.randomBytes(32).toString("hex");
+    const emailTokenExpires = Date.now() + 1000 * 60 * 60 * 24; // 24 hours
+
+    const user = {
+      username,
+      email,
+      password_hash,
+      email_verified: false,
+      email_verify_token: emailToken,
+      email_verify_expires: emailTokenExpires,
+      rp: { joined: false },
+      createdAt: new Date().toISOString(),
+    };
+
     users.push(user);
     await saveUsers();
 
     // set session and ensure it's saved before responding
     req.session.user = { username: user.username, email: user.email };
-    return saveSessionAndSend(req, res, { ok: true });
+
+    // prepare verification link
+    const verifyUrl = `${BASE_URL.replace(/\/$/, "")}/api/verify-email?token=${encodeURIComponent(emailToken)}`;
+
+    // Send email (best-effort). If mailer not configured, this will log the message.
+    try {
+      await mailer.sendMail({
+        from: process.env.MAIL_FROM || `"WorldConflict" <${MAIL_USER || 'no-reply@worldconflict.local'}>`,
+        to: email,
+        subject: "Vérifie ton email — WorldConflict",
+        text: `Bienvenue sur WorldConflict !\n\nVérifie ton email en cliquant sur le lien suivant:\n\n${verifyUrl}\n\n(Le lien expire dans 24 heures.)`,
+        html: `
+          <div style="font-family: Arial, sans-serif; line-height:1.4; color:#111;">
+            <h2>Bienvenue sur WorldConflict</h2>
+            <p>Clique sur le lien ci-dessous pour vérifier ton adresse email :</p>
+            <p><a href="${verifyUrl}">${verifyUrl}</a></p>
+            <p>Le lien expire dans 24 heures.</p>
+          </div>
+        `,
+      });
+      // In production we don't return the token in the response.
+      const respPayload = { ok: true };
+      // in non-production or if transporter is fallback, include preview url to help debugging
+      if (process.env.NODE_ENV !== "production" || !process.env.MAIL_HOST || !process.env.MAIL_USER) {
+        respPayload.preview_verify_url = verifyUrl;
+      }
+      return saveSessionAndSend(req, res, respPayload);
+    } catch (e) {
+      console.error("Failed to send verification email:", e && e.message ? e.message : e);
+      // still allow registration but inform client
+      const respPayload = { ok: true, warning: "Impossible d'envoyer l'email de vérification. Vérifie les logs.", preview_verify_url: verifyUrl };
+      return saveSessionAndSend(req, res, respPayload);
+    }
   } catch (err) {
     console.error("POST /api/register error:", err);
     return res.status(500).json({ ok: false, error: "Erreur serveur" });
@@ -323,6 +414,94 @@ app.post("/api/login", async (req, res) => {
   } catch (err) {
     console.error("POST /api/login error:", err);
     return res.status(500).json({ ok: false, error: "Erreur serveur" });
+  }
+});
+
+// Resend verification email (rate-limited). Accepts either logged-in user or body.email param.
+app.post("/api/resend-verify", async (req, res) => {
+  try {
+    const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
+    if (!checkRate(rate.resendVerify, ip, RATE_LIMIT_MAX.resendVerify)) {
+      return res.status(429).json({ ok: false, error: "Trop de requêtes, réessaye plus tard" });
+    }
+
+    let user = null;
+    if (req.session && req.session.user && req.session.user.email) {
+      user = findUserByEmail(req.session.user.email);
+    } else {
+      const email = safeTrim(req.body?.email || "", 200);
+      if (!email || !email.includes("@")) return res.status(400).json({ ok: false, error: "Email invalide" });
+      user = findUserByEmail(email);
+    }
+
+    if (!user) return res.status(404).json({ ok: false, error: "Utilisateur introuvable" });
+    if (user.email_verified) return res.json({ ok: true, message: "Email déjà vérifié" });
+
+    // generate new token + expiry
+    const token = crypto.randomBytes(32).toString("hex");
+    user.email_verify_token = token;
+    user.email_verify_expires = Date.now() + 1000 * 60 * 60 * 24;
+
+    await saveUsers();
+
+    const verifyUrl = `${BASE_URL.replace(/\/$/, "")}/api/verify-email?token=${encodeURIComponent(token)}`;
+
+    try {
+      await mailer.sendMail({
+        from: process.env.MAIL_FROM || `"WorldConflict" <${MAIL_USER || 'no-reply@worldconflict.local'}>`,
+        to: user.email,
+        subject: "Renvoyer le lien de vérification — WorldConflict",
+        text: `Voici votre lien de vérification:\n\n${verifyUrl}`,
+        html: `<p>Voici votre lien de vérification:</p><p><a href="${verifyUrl}">${verifyUrl}</a></p>`
+      });
+      const resp = { ok: true };
+      if (process.env.NODE_ENV !== "production" || !process.env.MAIL_HOST || !process.env.MAIL_USER) {
+        resp.preview_verify_url = verifyUrl;
+      }
+      return res.json(resp);
+    } catch (e) {
+      console.error("Failed to resend verification email:", e && e.message ? e.message : e);
+      return res.status(500).json({ ok: false, error: "Impossible d'envoyer l'email" });
+    }
+  } catch (err) {
+    console.error("POST /api/resend-verify error:", err);
+    return res.status(500).json({ ok: false, error: "Erreur serveur" });
+  }
+});
+
+// verify-email (GET) — called from link in email
+app.get("/api/verify-email", async (req, res) => {
+  try {
+    const token = req.query.token || "";
+    if (!token) {
+      return res.status(400).send("<h1>Token manquant</h1>");
+    }
+
+    const user = users.find(u => u.email_verify_token === token && u.email_verify_expires && Number(u.email_verify_expires) > Date.now());
+    if (!user) {
+      return res.status(400).send("<h1>Lien invalide ou expiré</h1><p>Demande un nouveau lien depuis la page de connexion.</p>");
+    }
+
+    user.email_verified = true;
+    delete user.email_verify_token;
+    delete user.email_verify_expires;
+
+    await saveUsers();
+
+    // Simple confirmation page
+    return res.send(`
+      <html>
+        <head><meta charset="utf-8" /><title>Email vérifié</title></head>
+        <body style="font-family: Arial, sans-serif; padding:24px;">
+          <h1>Email vérifié ✅</h1>
+          <p>Ton adresse email a bien été vérifiée. Tu peux maintenant te connecter.</p>
+          <p><a href="/">Retour à l'accueil</a></p>
+        </body>
+      </html>
+    `);
+  } catch (err) {
+    console.error("GET /api/verify-email error:", err);
+    return res.status(500).send("<h1>Erreur serveur</h1>");
   }
 });
 
