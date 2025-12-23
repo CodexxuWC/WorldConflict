@@ -12,6 +12,8 @@ import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import marketApi from './economy/market_api.js';
 import { sendVerificationEmail } from "./utils/mailer.js";
+import dotenv from 'dotenv';
+dotenv.config({ path: './file.env' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
