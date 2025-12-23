@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import fsSync from "fs";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import marketApi from './economy/market_api.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,7 +49,6 @@ function checkRate(map, ip, max) {
 // utils
 const normalize = (s) => (typeof s === "string" ? s.trim().toLowerCase() : "");
 const safeTrim = (s, max = 200) => (typeof s === "string" ? s.trim().slice(0, max) : "");
-const hashPwd = (p) => crypto.createHash("sha256").update(String(p)).digest("hex");
 
 // persistence helpers
 async function ensureDataDir() {
@@ -262,13 +262,16 @@ app.post("/api/register", async (req, res) => {
     if (findUserByEmail(email)) return res.json({ ok: false, error: "Email déjà utilisé" });
     if (findUserByUsername(username)) return res.json({ ok: false, error: "Nom d’utilisateur déjà pris" });
 
-    const user = {
-      username,
-      email,
-      password: hashPwd(password),
-      rp: { joined: false },
-      createdAt: new Date().toISOString(),
-    };
+const password_hash = await bcrypt.hash(password, 12);
+
+const user = {
+  username,
+  email,
+  password_hash,
+  email_verified: false, // 🔒 PHASE 2
+  rp: { joined: false },
+  createdAt: new Date().toISOString(),
+};
     users.push(user);
     await saveUsers();
 
@@ -281,7 +284,6 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-// login with rate limiting
 app.post("/api/login", async (req, res) => {
   try {
     const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
@@ -294,13 +296,30 @@ app.post("/api/login", async (req, res) => {
     if (!userId || !password) return res.status(400).json({ ok: false, error: "Champs manquants" });
 
     const found = findUserByLogin(userId);
-    if (!found || found.password !== hashPwd(password)) {
-      return res.status(401).json({ ok: false, error: "Identifiants invalides" });
+    if (!found) return res.status(401).json({ ok: false, error: "Identifiants invalides" });
+
+    // --- upgrade auto pour anciens comptes SHA256 ---
+    if (found.password && !found.password_hash) {
+      if (found.password === crypto.createHash("sha256").update(password).digest("hex")) {
+        found.password_hash = await bcrypt.hash(password, 12);
+        delete found.password;
+        await saveUsers(); // persiste la mise à jour
+      } else {
+        return res.status(401).json({ ok: false, error: "Identifiants invalides" });
+      }
+    }
+
+    // Vérification standard avec bcrypt
+    const ok = await bcrypt.compare(password, found.password_hash);
+    if (!ok) return res.status(401).json({ ok: false, error: "Identifiants invalides" });
+
+    if (!found.email_verified) {
+      return res.status(403).json({ ok: false, error: "Email non vérifié" });
     }
 
     req.session.user = { username: found.username, email: found.email };
-    // ensure session cookie is saved/emitted before responding
     return saveSessionAndSend(req, res, { ok: true, username: found.username, rp: found.rp });
+
   } catch (err) {
     console.error("POST /api/login error:", err);
     return res.status(500).json({ ok: false, error: "Erreur serveur" });
