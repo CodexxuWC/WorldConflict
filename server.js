@@ -11,6 +11,7 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import marketApi from './economy/market_api.js';
+import { sendVerificationEmail } from "./utils/mailer.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -342,20 +343,7 @@ app.post("/api/register", async (req, res) => {
 
     // Send email (best-effort). If mailer not configured, this will log the message.
     try {
-      await mailer.sendMail({
-        from: process.env.MAIL_FROM || `"WorldConflict" <${MAIL_USER || 'no-reply@worldconflict.local'}>`,
-        to: email,
-        subject: "Vérifie ton email — WorldConflict",
-        text: `Bienvenue sur WorldConflict !\n\nVérifie ton email en cliquant sur le lien suivant:\n\n${verifyUrl}\n\n(Le lien expire dans 24 heures.)`,
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height:1.4; color:#111;">
-            <h2>Bienvenue sur WorldConflict</h2>
-            <p>Clique sur le lien ci-dessous pour vérifier ton adresse email :</p>
-            <p><a href="${verifyUrl}">${verifyUrl}</a></p>
-            <p>Le lien expire dans 24 heures.</p>
-          </div>
-        `,
-      });
+      await sendVerificationEmail(email, verifyUrl);
       // In production we don't return the token in the response.
       const respPayload = { ok: true };
       // in non-production or if transporter is fallback, include preview url to help debugging
