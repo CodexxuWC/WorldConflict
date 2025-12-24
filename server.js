@@ -51,7 +51,7 @@ app.use(
 // -----------------------------------------------------------------------------
 // Static files (front-end)
 // -----------------------------------------------------------------------------
-app.use(express.static(path.join(__dirname, "index.html")));
+app.use(express.static(path.join(__dirname)));
 
 // -----------------------------------------------------------------------------
 // Safe API mounting helper (imports modules dynamically and mounts safely)
