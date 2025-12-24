@@ -84,15 +84,15 @@ router.post("/register", async (req, res) => {
 
     const password_hash = await bcrypt.hash(password, 12);
 
-    // email verification token
-    const emailToken = crypto.randomBytes(32).toString("hex");
-    const emailTokenExpires = Date.now() + 1000 * 60 * 60 * 24; // 24 hours
+      // email verification token (À FAIRE)
+   // const emailToken = crypto.randomBytes(32).toString("hex");
+   // const emailTokenExpires = Date.now() + 1000 * 60 * 60 * 24; // 24 hours
 
     const user = {
       username,
       email,
       password_hash,
-      email_verified: false,
+      email_verified: true,
       email_verify_token: emailToken,
       email_verify_expires: emailTokenExpires,
       rp: { joined: false },
@@ -105,11 +105,11 @@ router.post("/register", async (req, res) => {
     // set session (saved by saveSessionAndSend)
     if (req.session) req.session.user = { username: user.username, email: user.email };
 
-    const verifyUrl = `${BASE_URL.replace(/\/$/, "")}/api/verify-email?token=${encodeURIComponent(emailToken)}`;
+   // const verifyUrl = `${BASE_URL.replace(/\/$/, "")}/api/verify-email?token=${encodeURIComponent(emailToken)}`;
 
     try {
       // sendVerificationEmail lives in utils/mailer and handles fallback logging
-      await sendVerificationEmail(email, verifyUrl);
+     // await sendVerificationEmail(email, verifyUrl);
 
       const respPayload = { ok: true };
       if (process.env.NODE_ENV !== "production" || !process.env.MAIL_HOST || !process.env.MAIL_USER) {
