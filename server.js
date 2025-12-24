@@ -147,7 +147,7 @@ async function start() {
     }
 
     // Fallback SPA — doit être après le montage des APIs
-    app.get("*", spaFallbackHandler);
+app.get(/^(?!\/api).*$/, spaFallbackHandler);
 
     app.listen(PORT, () => {
       console.log(`WorldConflict backend running on port ${PORT}`);
