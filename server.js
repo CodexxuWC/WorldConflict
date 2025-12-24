@@ -51,7 +51,7 @@ app.use(
 // -----------------------------------------------------------------------------
 // Static files (front-end)
 // -----------------------------------------------------------------------------
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "index.html")));
 
 // -----------------------------------------------------------------------------
 // Safe API mounting helper (imports modules dynamically and mounts safely)
@@ -111,7 +111,7 @@ function spaFallbackHandler(req, res) {
   if (req.method !== "GET" || !req.accepts || !req.accepts("html")) {
     return res.status(404).end();
   }
-  const indexPath = path.join(__dirname, "public", "index.html");
+  const indexPath = path.join(__dirname, "index.html");
   if (!fsSync.existsSync(indexPath)) {
     return res.status(404).send("index.html introuvable");
   }
