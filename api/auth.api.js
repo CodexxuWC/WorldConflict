@@ -163,10 +163,6 @@ router.post("/login", async (req, res) => {
     const ok = await bcrypt.compare(password, found.password_hash);
     if (!ok) return res.status(401).json({ ok: false, error: "Identifiants invalides" });
 
-    if (!found.email_verified) {
-      return res.status(403).json({ ok: false, error: "Email non vérifié" });
-    }
-
     if (req.session) req.session.user = { username: found.username, email: found.email };
     return saveSessionAndSend(req, res, { ok: true, username: found.username, rp: found.rp });
   } catch (err) {
