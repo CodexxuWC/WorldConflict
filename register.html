@@ -1,60 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Créer un compte — WorldConflict</title>
-  <link rel="stylesheet" href="variables.css">
+
+  <!-- Global bundle (importe css/variables.css, base, layout, components) -->
+  <link rel="stylesheet" href="wc.css">
+
+  <!-- Styles spécifiques à la page d'inscription (ne duplique pas les variables) -->
   <link rel="stylesheet" href="register.css">
 </head>
-<body>
-  <main class="register-container">
-    <section class="register-box">
-      <h1>Créer un compte</h1>
+<body class="wc-page">
 
-      <form id="registerForm" novalidate>
-        <label for="username">Nom d'utilisateur</label>
-        <input type="text" id="username" name="username" placeholder="Ton pseudo" required>
+  <main class="wc-main" role="main">
+    <div class="register-shell container">
 
-        <label for="email">Adresse e-mail</label>
-        <input type="email" id="email" name="email" placeholder="exemple@email.com" required>
+      <section class="auth-card" aria-labelledby="registerTitle">
+        <h1 id="registerTitle" class="page-title">Créer un compte</h1>
+        <p class="lead muted">Inscris-toi pour rejoindre la communauté — une seule inscription par personne.</p>
 
-        <label for="password">Mot de passe</label>
-        <div class="password-box">
-          <input type="password" id="password" name="password" placeholder="Mot de passe" required>
-          <button type="button" id="togglePassword" title="Afficher le mot de passe">👁️</button>
-        </div>
+        <form id="registerForm" class="form" novalidate aria-describedby="registerHelp">
+          <div id="registerHelp" class="muted" style="display:none">Remplis les champs obligatoires.</div>
 
-        <label for="confirm">Confirme ton mot de passe</label>
-        <input type="password" id="confirm" name="confirm" placeholder="Répète le mot de passe" required>
+          <label class="field">
+            <span class="label">Nom d'utilisateur</span>
+            <input type="text" id="username" name="username" placeholder="Ton pseudo" required autocomplete="username" minlength="3" />
+          </label>
 
-        <!-- Checkbox + lien bleu (ouvre rules.html si l'utilisateur veut lire) -->
-        <label class="accept-terms" style="display:flex;align-items:flex-start;gap:10px;margin-top:8px;">
-          <input id="acceptCheckbox" type="checkbox" />
-          <span style="line-height:1.25;">
-            Je confirme avoir lu la
-            <a href="rules.html" id="rulesLink" class="rules-link" target="_blank" rel="noopener noreferrer"
-               style="color:#00aff4;text-decoration:underline;cursor:pointer;">
-              politique de confidentialité et règlements
-            </a>
-            et je les accepte.
-          </span>
-        </label>
+          <label class="field">
+            <span class="label">Adresse e-mail</span>
+            <input type="email" id="email" name="email" placeholder="exemple@email.com" required autocomplete="email" />
+          </label>
 
-        <button type="submit" class="btn primary" id="submitBtn" style="margin-top:12px;">Créer un compte</button>
+          <label class="field">
+            <span class="label">Mot de passe</span>
+            <div class="passwrap">
+              <input type="password" id="password" name="password" placeholder="Mot de passe" required minlength="8" autocomplete="new-password" />
+              <button type="button" id="togglePassword" class="icon-btn" aria-label="Afficher/masquer le mot de passe">Afficher</button>
+            </div>
+            <small class="muted">8 caractères minimum, mélange recommandé lettres+chiffres.</small>
+          </label>
 
-        <p class="back-login" style="text-align:center;margin-top:12px;">Déjà un compte ?
-          <a href="index.html">Se connecter</a>
-        </p>
-      </form>
+          <label class="field">
+            <span class="label">Confirmer le mot de passe</span>
+            <input type="password" id="confirm" name="confirm" placeholder="Répète le mot de passe" required minlength="8" autocomplete="new-password" />
+          </label>
 
-    </section>
+          <label class="accept-terms" style="display:flex;align-items:flex-start;gap:10px;margin-top:8px;">
+            <input id="acceptCheckbox" type="checkbox" required aria-required="true" />
+            <span style="line-height:1.25;">
+              Je confirme avoir lu la
+              <a href="rules.html" id="rulesLink" class="rules-link" target="_blank" rel="noopener noreferrer">politique de confidentialité et règlements</a>
+              et je les accepte.
+            </span>
+          </label>
 
-    <footer>
-      <p style="text-align:center;color:#72767d;font-size:0.85rem;">© <span id="year"></span> WorldConflict. Tous droits réservés.</p>
-    </footer>
+          <button type="submit" class="btn primary" id="submitBtn" aria-live="polite">Créer un compte</button>
+
+          <p class="back-login">Déjà un compte ?
+            <a href="index.html" class="link">Se connecter</a>
+          </p>
+
+          <!-- Feedback area -->
+          <div id="registerStatus" role="status" aria-live="polite" class="muted" style="margin-top:10px"></div>
+        </form>
+      </section>
+
+    </div>
   </main>
 
+  <footer class="wc-footer" role="contentinfo">
+    <div class="container">
+      <small class="muted">© <span id="yearFooter"></span> WorldConflict. Tous droits réservés.</small>
+    </div>
+  </footer>
+
+  <!-- page-specific behavior (form submission, validation, API) -->
   <script src="register.js" defer></script>
 </body>
 </html>

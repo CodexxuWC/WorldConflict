@@ -51,7 +51,23 @@
 
 /* Buttons — rely on components in wc.css; keep only spacing here */
 .btn { display:inline-block; width:100%; padding:12px 14px; border-radius:var(--radius); font-weight:600; margin-top:14px; text-align:center; }
-.btn.primary { background: linear-gradient(90deg,var(--accent1),var(--accent2)); color:#fff; border:0; box-shadow:0 8px 24px rgba(6,11,41,0.45); }
+.btn.primary {
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #22d3ee
+  );
+  color: #ffffff;
+
+  box-shadow:
+    0 10px 28px rgba(34, 211, 238, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
 .btn.ghost { background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); }
 
 /* Separator */
