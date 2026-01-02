@@ -1,0 +1,209 @@
+/* layout.css — page structure, header, main, panels, grids
+   Depends on variables.css and base.css.
+   Mobile-first responsive layout.
+*/
+
+/* Global page shell */
+.wc-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 8px; /* base padding; bottom-nav adds extra via media query */
+}
+
+/* Header */
+.wc-header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 var(--space-md);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.002));
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  backdrop-filter: blur(4px);
+}
+
+/* Header inner layout */
+.wc-header .brand {
+  display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.05rem;
+}
+.wc-header .header-actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
+
+/* Main content area */
+.wc-main {
+  flex: 1 1 auto;
+  padding: calc(var(--space-lg)) 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Main layout variants */
+
+/* Single column (default mobile) */
+.layout-single {
+  display: block;
+}
+
+/* Two-column: sidebar + content */
+.layout-two {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+/* Three column (optional) */
+.layout-three {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+/* Panels inside columns */
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Panel variations */
+.panel-lg { padding: calc(var(--space-lg)); border-radius: calc(var(--radius) + 4px); }
+.panel-sm { padding: var(--space-sm); border-radius: var(--radius-sm); }
+
+/* Sidebar utilities */
+.sidebar {
+  width: 100%;
+  max-width: 320px;
+}
+
+/* Cards / card list */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+@media (min-width: 920px) {
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1280px) {
+  .card-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Responsive breakpoints: create actual two/three column on larger screens */
+@media (min-width: 880px) {
+  .layout-two {
+    grid-template-columns: 300px 1fr;
+    align-items: start;
+  }
+  .layout-three {
+    grid-template-columns: 260px 1fr 320px;
+    align-items: start;
+  }
+  .wc-main { padding: calc(var(--space-lg) * 1.1) 20px; }
+}
+
+/* Page header inside content (title + actions) */
+.page-head {
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+.page-head .title { font-size: 1.3rem; font-weight: 800; }
+.page-head .subtitle { color: var(--muted); font-size: 0.95rem; }
+
+/* Floating panels / sticky side panels */
+.sticky {
+  position: sticky;
+  top: calc(var(--header-h) + 12px);
+}
+
+/* Toast container position (if not present in HTML) */
+/* Use existing #toast element from pages; this just offers defaults */
+#wc-toast {
+  position: fixed;
+  right: 18px;
+  bottom: 90px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Table baseline (simple styling for admin lists) */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  color: var(--text);
+}
+.table th, .table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+.table th { color: var(--muted); font-weight: 700; font-size: 0.9rem; }
+
+/* Footer / site meta */
+.wc-footer {
+  padding: var(--space-md) 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.02);
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.01));
+}
+
+/* Utility: small responsive helpers */
+.hide-desktop { display: block; }
+@media (min-width: 880px) { .hide-desktop { display: none !important; } }
+.hide-mobile { display: none; }
+@media (min-width: 880px) { .hide-mobile { display: block; } }
+
+/* Ensure bottom nav doesn't cover content: add safe area */
+@media (max-width: 640px) {
+  body { padding-bottom: calc(var(--nav-item-height, 52px) + var(--nav-bottom-offset, 18px) + 12px); }
+}
+
+/* Shadow helpers (based on variables) */
+.elev-1 { box-shadow: var(--shadow-xs); }
+.elev-2 { box-shadow: var(--shadow-sm); }
+.elev-card { box-shadow: var(--card-elev); }
+
+/* Tiny animation for subtle entrance */
+.fade-in {
+  animation: fadeIn var(--transition) ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Small form-centered layout for auth pages */
+.auth-shell {
+  display:flex;
+  flex-direction:column;
+  gap: 18px;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 12px;
+  min-height: calc(100vh - var(--header-h));
+}
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Map container helper (map.html uses #map) */
+#map {
+  width: 100%;
+  height: 60vh;
+  border-radius: var(--radius);
+  border: 1px solid var(--muted-border);
+  overflow: hidden;
+}
+@media (min-width: 880px) { #map { height: calc(100vh - var(--header-h) - 120px); } }

@@ -1,0 +1,31 @@
+/* wc.css — fichier unique d'importation (point d'entrée pour les pages)
+   Ordre : variables -> base -> layout -> components
+   Place ce fichier dans css/ et référence-le depuis chaque page HTML.
+*/
+
+@import "css/variables.css";
+@import "css/base.css";
+@import "css/layout.css";
+@import "css/components.css";
+
+/* Overwrites et helpers globaux spécifiques au bundle */
+:root {
+  /* force default accent fallback si absent*/
+  --accent1: var(--accent1, #4f46e5);
+  --accent2: var(--accent2, #06b6d4);
+}
+
+/* Mini helper pour éviter le flash lors du chargement quand JS manipule des éléments */
+html.wc-preload * { transition: none !important; }
+
+/* Body safe area for mobile (iOS) */
+body { padding-bottom: env(safe-area-inset-bottom, 0); }
+
+/* Ensure focus ring consistency */
+:focus { outline: none; }
+:focus-visible { box-shadow: var(--nav-focus-outline); border-radius: 6px; }
+
+/* small helper for debugging layout */
+.debug-grid * { outline: 1px dashed rgba(255,255,255,0.02); }
+
+/* end wc.css */

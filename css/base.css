@@ -1,0 +1,229 @@
+/* base.css — reset minimal, typographie, forms, utilities
+   Mobile-first. Depends on variables.css tokens.
+*/
+
+/* ------ Reset & defaults (non-destructive) ------ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+  font-weight: normal;
+}
+
+/* Ensure images and media are responsive */
+img, picture, svg, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Base typography */
+:root {
+  --header-h: 64px; /* used by layout */
+  --scale-ratio: 1.18;
+  --h1-size: calc(var(--text-size-base) * 1.8);
+  --h2-size: calc(var(--text-size-base) * 1.45);
+  --h3-size: calc(var(--text-size-base) * 1.2);
+  --lead-size: calc(var(--text-size-base) * 1.05);
+}
+
+/* Body set in variables.css; reinforce sensible defaults */
+body {
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background-attachment: fixed;
+  -webkit-text-size-adjust: 100%;
+  color: var(--text);
+  font-family: var(--font-stack);
+  font-size: var(--text-size-base);
+  min-height: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Type scale */
+h1 { font-size: var(--h1-size); line-height: 1.06; margin-bottom: 0.35em; font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: var(--h2-size); margin-bottom: 0.35em; font-weight: 700; }
+h3 { font-size: var(--h3-size); margin-bottom: 0.35em; font-weight: 700; }
+h4, h5, h6 { font-weight: 700; margin-bottom: 0.25em; }
+
+p { margin-bottom: 1em; color: var(--text); }
+.lead { font-size: var(--lead-size); color: var(--muted-contrast); margin-bottom: 1em; }
+
+/* Links */
+a {
+  color: var(--accent2);
+  text-decoration: none;
+  transition: color var(--transition), opacity var(--transition);
+}
+a:hover, a:focus { color: var(--accent1); text-decoration: underline; }
+
+/* Lists */
+ul, ol { padding-left: 1.15rem; margin-bottom: 1em; color: var(--muted-contrast); }
+li + li { margin-top: 0.35em; }
+
+/* Blockquote */
+blockquote {
+  border-left: 3px solid rgba(255,255,255,0.03);
+  padding-left: 12px;
+  margin: 0 0 1em 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Horizontal rule */
+hr {
+  border: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.03);
+  margin: 18px 0;
+}
+
+/* Accessibility focus */
+:focus { outline: none; }
+:focus-visible {
+  box-shadow: var(--nav-focus-outline);
+  border-radius: 6px;
+}
+
+/* Keyboard visible focus for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  box-shadow: var(--nav-focus-outline);
+}
+
+/* Buttons — ensure consistent baseline beyond .btn in variables.css */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  text-decoration: none;
+  -webkit-user-select: none;
+  user-select: none;
+  line-height: 1;
+  font-size: 0.95rem;
+}
+
+/* Additional button variants */
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+}
+.btn.outline {
+  background: transparent;
+  border: 1px solid var(--muted-border);
+  color: var(--text);
+}
+.btn.small { padding: 6px 10px; font-size: 0.85rem; }
+
+/* Forms — unified look for inputs, selects, textarea */
+.field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; width: 100%; }
+.field-inline { display: flex; gap: 8px; align-items: center; }
+.label { font-size: 0.85rem; color: var(--muted); font-weight: 700; }
+
+.text-input,
+select,
+textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: var(--input-radius);
+  font-size: 0.95rem;
+  transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+  min-height: 40px;
+}
+.text-input::placeholder { color: var(--placeholder); }
+.textarea { min-height: 120px; padding: 12px; resize: vertical; }
+
+/* Inputs focus */
+.text-input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(79,70,229,0.9);
+  box-shadow: 0 6px 20px rgba(79,70,229,0.06);
+  outline: none;
+}
+
+/* Small form helpers */
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.form-inline { display:flex; gap:8px; align-items:center; }
+
+/* Native control improvements */
+select { -webkit-appearance: none; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 16px) calc(1em + 2px), calc(100% - 11px) calc(1em + 2px); background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; padding-right: 36px; }
+
+/* Inputs disabled/read-only */
+[disabled], :disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Tiny utility text */
+.muted { color: var(--muted); }
+.kicker { text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; font-size: 0.75rem; color: var(--muted); }
+
+/* Small elements */
+.small { font-size: 0.85rem; color: var(--muted); }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: var(--chip-padding);
+  border-radius: var(--chip-radius);
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+
+/* Utility layout helpers */
+.container { padding-left: 16px; padding-right: 16px; }
+.stack { display: flex; flex-direction: column; gap: var(--space-md); }
+.row { display:flex; gap: var(--space-md); align-items: center; }
+.center { display:flex; align-items:center; justify-content:center; }
+.space-between { display:flex; justify-content:space-between; align-items:center; }
+
+/* Cards / panels baseline (more in layout.css) */
+.panel {
+  background: var(--panel-bg);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  border: 1px solid var(--muted-border);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Visually hidden (already present in variables.css but keep here) */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* Media queries: ramp up type and spacing on larger screens */
+@media (min-width: 640px) {
+  :root { --text-size-base: 16px; }
+  .container { padding-left: 20px; padding-right: 20px; }
+}
+@media (min-width: 1024px) {
+  :root { --text-size-base: 16.5px; }
+  .container { padding-left: 24px; padding-right: 24px; }
+}
+
+/* Reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
