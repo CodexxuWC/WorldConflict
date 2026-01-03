@@ -125,8 +125,6 @@
     });
   }
 
-  if (rulesLink) rulesLink.addEventListener('click', (e) => { e.preventDefault(); /* intentionally noop */ });
-
   // Email check (debounced)
   async function doCheckEmail(email) {
     if (!email || email.indexOf('@') === -1) {

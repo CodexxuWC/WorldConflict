@@ -53,22 +53,22 @@ input:focus {
 
 /* CTA primary: stronger and consistent with login */
 .btn.primary {
-  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #22d3ee
+  );
   color: #ffffff;
-  padding: 12px;
-  border-radius: calc(var(--radius-sm));
-  border: 0;
-  font-weight: 700;
-  font-size: 15px;
-  box-shadow: 0 10px 28px rgba(34, 211, 238, 0.18);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+
+  box-shadow:
+    0 10px 28px rgba(34, 211, 238, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
-.btn.primary:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-  box-shadow: 0 14px 36px rgba(34, 211, 238, 0.25);
-}
-.btn.primary:active { transform: translateY(0); filter: brightness(0.98); }
 
 /* Back to login link */
 .back-login { margin-top: 6px; text-align: center; font-size: 0.95rem; color: var(--muted); }

@@ -1,0 +1,12 @@
+/* Shell layout */ .wc-shell{ display: grid; grid-template-columns: var(--left-width) 1fr var(--right-width); gap: var(--gap); height: 100vh; background: var(--bg); color: var(--wc-foreground, #e6eef8); }
+
+/* Left column */ .wc-left{ padding: 8px; background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); display:flex; flex-direction:column; align-items:stretch; } .wc-left-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px } .wc-brand{ font-weight:700; font-size:13px } .wc-servers{ display:flex; flex-direction:column; gap:8px } .wc-servers .server{ padding:8px; border-radius:10px; background:transparent; border:none; cursor:pointer } .wc-servers .server.active{ background: rgba(255,255,255,0.04) } .wc-left-footer{ margin-top:auto; }
+
+/* Main */ .wc-main{ padding: 8px; display:flex; flex-direction:column; gap:8px; overflow:hidden } .wc-topbar{ height:44px; display:flex; align-items:center; justify-content:space-between; padding:6px 8px; background:var(--panel-bg); border-radius:8px } .wc-panel-container{ overflow:auto; padding:10px; border-radius:8px; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); } .panel{ background: rgba(255,255,255,0.02); padding:12px; border-radius:8px; box-shadow: 0 1px 0 rgba(0,0,0,0.25) inset }
+
+/* Right */ .wc-right{ padding:8px; background:var(--panel-bg); overflow:auto }
+
+/* Chat */ .chat-shell{ display:flex; flex-direction:column; height:calc(100vh - 160px); } .chat-messages{ flex:1; overflow:auto; padding:8px; border-radius:6px; background:rgba(0,0,0,0.12) } .chat-form{ display:flex; gap:8px; margin-top:8px } .chat-form input{ flex:1; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06) }
+
+/* Responsive */ @media (max-width: 900px){ .wc-shell{ grid-template-columns: 60px 1fr; grid-template-rows: 1fr auto; } .wc-right{ display:none } }
+

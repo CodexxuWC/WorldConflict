@@ -1342,8 +1342,6 @@ EMAIL_FROM="WorldConflict" <no-reply@worldconflict.com>
     });
   }
 
-  if (rulesLink) rulesLink.addEventListener('click', (e) => { e.preventDefault(); /* intentionally noop */ });
-
   // Email check (debounced)
   async function doCheckEmail(email) {
     if (!email || email.indexOf('@') === -1) {
@@ -3393,9 +3391,6 @@ body { padding-bottom: env(safe-area-inset-bottom, 0); }
 .debug-grid * { outline: 1px dashed rgba(255,255,255,0.02); }
 
 /* end wc.css */
-
-===== ./-exec =====
-
 
 ===== ./css/layout.css =====
 
@@ -14729,95 +14724,99 @@ console.log(`Files generated in: ${outDir}`);
 
 })();
 
-===== ./! =====
-
-
 ===== ./register.css =====
 
-:root {
-  --bg: #0b1020;
-  --surface: #0f1724;
-  --muted: #9aa4b2;
-  --accent1: #4f46e5;
-  --accent2: #06b6d4;
-  --glass: rgba(255,255,255,0.04);
-  --card-shadow: 0 8px 26px rgba(2,6,23,0.6);
-  --radius: 12px;
-  --radius-sm: 10px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
+/* register.css — styles spécifiques à la page d'inscription
+   Ne duplique pas les variables / resets (gérés par wc.css).
+*/
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  color: #e6eef8;
-  font-family: inherit;
-}
-
-.register-container {
+/* Shell centré et carte d'inscription */
+.register-shell {
   width: 100%;
-  max-width: 420px;
+  max-width: 520px;
+  margin: 40px auto;
   padding: 20px;
 }
 
-.register-box {
-  background: var(--surface);
+.auth-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.004));
   border-radius: var(--radius);
-  padding: 30px;
-  box-shadow: var(--card-shadow);
+  padding: 26px;
+  box-shadow: var(--card-elev, 0 12px 36px rgba(2,6,23,0.6));
 }
 
-h1 {
-  text-align: center;
-  font-size: 1.8em;
-  color: #fff;
-  margin-bottom: 25px;
-}
+/* Title & intro */
+.page-title { margin: 0 0 6px 0; font-size: 1.4rem; font-weight: 800; }
+.lead { margin-bottom: 12px; color: var(--muted); }
 
-form { display: flex; flex-direction: column; gap: 15px; }
+/* Form layout */
+.form { display: flex; flex-direction: column; gap: 12px; }
+.field { display:flex; flex-direction:column; gap:6px; }
+.label { font-size: 13px; color: var(--muted); }
 
-label { font-size: 0.9em; color: var(--muted); }
-input {
+/* Inputs (only overrides / page-specific tweaks) */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   background: var(--glass);
   border: 1px solid rgba(255,255,255,0.03);
   color: inherit;
-  padding: 10px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
+  font-size: 15px;
+}
+input:focus {
   outline: none;
+  border-color: rgba(79,70,229,0.6);
+  box-shadow: 0 8px 20px rgba(79,70,229,0.06);
 }
-input:focus { border-color: rgba(79,70,229,0.6); }
 
-.password-box { display: flex; align-items: center; gap: 8px; }
-.password-box input { flex: 1; }
-.password-box button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2em; }
-.password-box button:hover { color: #fff; }
+/* Password wrapper */
+.passwrap { display:flex; gap:8px; align-items:center; }
+.passwrap input { flex: 1; }
+.icon-btn { background: transparent; border: 0; padding: 8px; border-radius: 8px; cursor: pointer; color: var(--muted); }
 
+/* Accept terms */
+.accept-terms { margin-top: 6px; color: var(--muted); font-size: 14px; }
+
+/* CTA primary: stronger and consistent with login */
 .btn.primary {
-  background: linear-gradient(90deg, var(--accent1), var(--accent2));
-  border: none;
-  color: #fff;
-  padding: 12px;
-  font-size: 1em;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #22d3ee
+  );
+  color: #ffffff;
+
+  box-shadow:
+    0 10px 28px rgba(34, 211, 238, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 
-.btn.primary:hover { opacity: 0.9; }
-
-.back-login { text-align: center; margin-top: 10px; font-size: 0.9em; }
+/* Back to login link */
+.back-login { margin-top: 6px; text-align: center; font-size: 0.95rem; color: var(--muted); }
 .back-login a { color: var(--accent2); text-decoration: none; }
 .back-login a:hover { text-decoration: underline; }
 
-footer { text-align: center; color: var(--muted); font-size: 0.8em; margin-top: 15px; }
-
-@media (max-width: 480px) { .register-box { padding: 20px; } h1 { font-size: 1.5em; } }
+/* Small helper text */
+.muted { color: var(--muted); font-size: 13px; }
 .rules-link { color: var(--accent2); text-decoration: underline; }
 .rules-link:hover { color: #00cfff; }
+
+/* Feedback area (registerStatus) */
+#registerStatus { min-height: 1.1em; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .register-shell { margin: 20px; padding: 10px; }
+  .auth-card { padding: 18px; }
+  .page-title { font-size: 1.2rem; }
+}
 
 ===== ./profile.css =====
 
@@ -15025,113 +15024,96 @@ footer { text-align: center; color: var(--muted); font-size: 0.8em; margin-top: 
 
 ===== ./index.css =====
 
-:root {
-  --bg: #0b1020;
-  --surface: #0f1724;
-  --muted: #9aa4b2;
-  --accent1: #4f46e5;
-  --accent2: #06b6d4;
-  --glass: rgba(255,255,255,0.04);
-  --card-shadow: 0 8px 26px rgba(2,6,23,0.6);
-  --radius: 12px;
-  --radius-sm: 10px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
+/* index.css — styles spécifiques à la page de connexion
+   N'inclut pas variables ni resets (gérés par wc.css).
+*/
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body { height: 100%; background: var(--bg); color: #e6eef8; font-family: inherit; }
-
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-}
-
-.app {
+/* Shell centré pour la page de connexion */
+.login-shell {
   width: 100%;
-  max-width: 1100px;
+  max-width: 920px;
+  margin: 40px auto;
+  padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 32px;
-  align-items: center;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
-/* HERO / left */
-.hero {
-  padding: 28px;
-  border-radius: var(--radius);
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent 30%);
-  box-shadow: var(--card-shadow);
-  min-height: 480px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.brand { display: flex; gap: 18px; align-items: center; }
-.logo { width: 72px; height: 72px; border-radius: 12px; }
-.brand-text h1 { margin: 0; font-size: 22px; }
-.tag { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
-
-.hero-illustration { display: flex; justify-content: center; align-items: center; margin-top: 24px; }
-.cards { position: relative; width: 100%; height: 260px; display: flex; align-items: center; justify-content: center; }
-.card { position: absolute; width: 80%; height: 68%; border-radius: var(--radius); box-shadow: var(--card-shadow); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); backdrop-filter: blur(6px); }
-.card-1 { transform: rotate(-6deg) translateX(-8%); }
-.card-2 { transform: rotate(4deg) translateX(6%); width: 86%; height: 74%; }
-.card-3 { transform: rotate(-2deg) translateY(18%); width: 72%; height: 60%; opacity: 0.95; }
-
-/* AUTH / right */
-.auth { display: flex; flex-direction: column; align-items: stretch; }
-.card.form {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+/* Auth card (centrée, compacte) */
+.auth-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.004));
   border-radius: var(--radius-sm);
   padding: 22px;
-  box-shadow: var(--card-shadow);
+  box-shadow: var(--card-elev, 0 8px 26px rgba(2,6,23,0.6));
+  max-width: 420px;
+  margin: 0 auto;
 }
-.card.form h2 { margin: 4px 0 4px; }
-.muted { color: var(--muted); font-size: 13px; }
-.field { display: block; margin-top: 14px; }
-.field .label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+
+/* Titles */
+.login-title { margin: 0 0 6px 0; font-size: 1.4rem; font-weight: 800; }
+.login-sub { margin: 0 0 14px 0; color: var(--muted); font-size: 0.95rem; }
+
+/* Form fields (only page-specific tweaks) */
+.field { margin-top: 12px; }
+.field .label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
 .field input {
-  width: 100%;
-  padding: 12px 14px;
+  width:100%;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
   background: var(--glass);
   border: 1px solid rgba(255,255,255,0.03);
-  color: inherit;
+  color:inherit;
   font-size: 15px;
 }
-.field input:focus { outline: none; border-color: rgba(79,70,229,0.6); box-shadow: 0 6px 18px rgba(79,70,229,0.06); }
-.passwrap { display: flex; align-items: center; gap: 8px; }
-.passwrap input { flex: 1; }
-#togglePassword { background: transparent; border: 0; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 14px; }
-#togglePassword:focus { outline: 2px solid rgba(79,70,229,0.18); }
 
-/* Rows, checkboxes, links */
-.row { display: flex; align-items: center; margin-top: 12px; }
-.row.between { justify-content: space-between; }
-.checkbox { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; }
-.checkbox input { width: 16px; height: 16px; }
-.link { color: var(--muted); text-decoration: none; font-size: 14px; }
+/* Password wrapper */
+.passwrap { display:flex; gap:8px; align-items:center; }
+.passwrap input { flex:1; }
+.icon-btn { background:transparent; border:0; padding:8px; border-radius:8px; cursor:pointer; font-size:13px; color:var(--muted); }
+
+/* Row helpers */
+.row.between { display:flex; justify-content:space-between; align-items:center; margin-top:12px; }
+
+/* Buttons — rely on components in wc.css; keep only spacing here */
+.btn { display:inline-block; width:100%; padding:12px 14px; border-radius:var(--radius); font-weight:600; margin-top:14px; text-align:center; }
+.btn.primary {
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #22d3ee
+  );
+  color: #ffffff;
+
+  box-shadow:
+    0 10px 28px rgba(34, 211, 238, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+.btn.ghost { background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); }
+
+/* Separator */
+.sep { display:flex; align-items:center; gap:12px; margin-top:12px; }
+.sep::before, .sep::after { content:''; flex:1; height:1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); }
+.sep span { padding:0 10px; color:var(--muted); font-size:13px; }
+
+/* Meta / links */
+.meta { margin-top:12px; font-size:12px; color:var(--muted); }
+.link { color: var(--accent2); text-decoration: none; font-size: 13px; }
 .link:hover { text-decoration: underline; }
 
-/* Buttons */
-.btn { width: 100%; padding: 12px 14px; border-radius: var(--radius); border: 0; font-weight: 600; font-size: 15px; margin-top: 14px; cursor: pointer; }
-.btn.primary { background: linear-gradient(90deg, var(--accent1), var(--accent2)); box-shadow: 0 8px 24px rgba(6,11,41,0.45); color: white; }
-.btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.04); color: var(--muted); }
+/* Low-contrast helper for small link row */
+.low-contrast { color: var(--muted); }
 
-.sep { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
-.sep::before, .sep::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); }
-.sep span { padding: 0 10px; color: var(--muted); font-size: 13px; }
-
-.meta { margin-top: 12px; font-size: 12px; color: var(--muted); }
-.legal { margin-top: 18px; text-align: right; color: var(--muted); font-size: 13px; }
-
-/* Responsive */
-@media (max-width:980px){ .app{ grid-template-columns: 1fr; max-width: 720px; } .hero{ order:2; } .auth{ order:1; } .hero-illustration{ display:none; } }
-@media (max-width:420px){ body{padding:18px} .card.form{padding:16px} }
+/* Responsive tweaks */
+@media (max-width: 720px) {
+  .login-shell { padding: 14px; margin: 20px auto; }
+  .auth-card { width: 100%; padding: 18px; }
+}
 
 ===== ./join-rp.css =====
 
@@ -18270,68 +18252,90 @@ console.log(`  overwritten: ${overwritten}`);
 console.log(`  skipped: ${skipped}`);
 console.log(`Files generated in: ${outDir}`);
 
-===== ./txt/WorldConflict.txt =====
+===== ./txt/WorldConflictBeforeRework.txt =====
 
 
 ===== ./register.html =====
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Créer un compte — WorldConflict</title>
-  <link rel="stylesheet" href="variables.css">
+
+  <!-- Global bundle (importe css/variables.css, base, layout, components) -->
+  <link rel="stylesheet" href="wc.css">
+
+  <!-- Styles spécifiques à la page d'inscription (ne duplique pas les variables) -->
   <link rel="stylesheet" href="register.css">
 </head>
-<body>
-  <main class="register-container">
-    <section class="register-box">
-      <h1>Créer un compte</h1>
+<body class="wc-page">
 
-      <form id="registerForm" novalidate>
-        <label for="username">Nom d'utilisateur</label>
-        <input type="text" id="username" name="username" placeholder="Ton pseudo" required>
+  <main class="wc-main" role="main">
+    <div class="register-shell container">
 
-        <label for="email">Adresse e-mail</label>
-        <input type="email" id="email" name="email" placeholder="exemple@email.com" required>
+      <section class="auth-card" aria-labelledby="registerTitle">
+        <h1 id="registerTitle" class="page-title">Créer un compte</h1>
+        <p class="lead muted">Inscris-toi pour rejoindre la communauté — une seule inscription par personne.</p>
 
-        <label for="password">Mot de passe</label>
-        <div class="password-box">
-          <input type="password" id="password" name="password" placeholder="Mot de passe" required>
-          <button type="button" id="togglePassword" title="Afficher le mot de passe">👁️</button>
-        </div>
+        <form id="registerForm" class="form" novalidate aria-describedby="registerHelp">
+          <div id="registerHelp" class="muted" style="display:none">Remplis les champs obligatoires.</div>
 
-        <label for="confirm">Confirme ton mot de passe</label>
-        <input type="password" id="confirm" name="confirm" placeholder="Répète le mot de passe" required>
+          <label class="field">
+            <span class="label">Nom d'utilisateur</span>
+            <input type="text" id="username" name="username" placeholder="Ton pseudo" required autocomplete="username" minlength="3" />
+          </label>
 
-        <!-- Checkbox + lien bleu (ouvre rules.html si l'utilisateur veut lire) -->
-        <label class="accept-terms" style="display:flex;align-items:flex-start;gap:10px;margin-top:8px;">
-          <input id="acceptCheckbox" type="checkbox" />
-          <span style="line-height:1.25;">
-            Je confirme avoir lu la
-            <a href="rules.html" id="rulesLink" class="rules-link" target="_blank" rel="noopener noreferrer"
-               style="color:#00aff4;text-decoration:underline;cursor:pointer;">
-              politique de confidentialité et règlements
-            </a>
-            et je les accepte.
-          </span>
-        </label>
+          <label class="field">
+            <span class="label">Adresse e-mail</span>
+            <input type="email" id="email" name="email" placeholder="exemple@email.com" required autocomplete="email" />
+          </label>
 
-        <button type="submit" class="btn primary" id="submitBtn" style="margin-top:12px;">Créer un compte</button>
+          <label class="field">
+            <span class="label">Mot de passe</span>
+            <div class="passwrap">
+              <input type="password" id="password" name="password" placeholder="Mot de passe" required minlength="8" autocomplete="new-password" />
+              <button type="button" id="togglePassword" class="icon-btn" aria-label="Afficher/masquer le mot de passe">Afficher</button>
+            </div>
+            <small class="muted">8 caractères minimum, mélange recommandé lettres+chiffres.</small>
+          </label>
 
-        <p class="back-login" style="text-align:center;margin-top:12px;">Déjà un compte ?
-          <a href="index.html">Se connecter</a>
-        </p>
-      </form>
+          <label class="field">
+            <span class="label">Confirmer le mot de passe</span>
+            <input type="password" id="confirm" name="confirm" placeholder="Répète le mot de passe" required minlength="8" autocomplete="new-password" />
+          </label>
 
-    </section>
+          <label class="accept-terms" style="display:flex;align-items:flex-start;gap:10px;margin-top:8px;">
+            <input id="acceptCheckbox" type="checkbox" required aria-required="true" />
+            <span style="line-height:1.25;">
+              Je confirme avoir lu la
+              <a href="rules.html" id="rulesLink" class="rules-link" target="_blank" rel="noopener noreferrer">politique de confidentialité et règlements</a>
+              et je les accepte.
+            </span>
+          </label>
 
-    <footer>
-      <p style="text-align:center;color:#72767d;font-size:0.85rem;">© <span id="year"></span> WorldConflict. Tous droits réservés.</p>
-    </footer>
+          <button type="submit" class="btn primary" id="submitBtn" aria-live="polite">Créer un compte</button>
+
+          <p class="back-login">Déjà un compte ?
+            <a href="index.html" class="link">Se connecter</a>
+          </p>
+
+          <!-- Feedback area -->
+          <div id="registerStatus" role="status" aria-live="polite" class="muted" style="margin-top:10px"></div>
+        </form>
+      </section>
+
+    </div>
   </main>
 
+  <footer class="wc-footer" role="contentinfo">
+    <div class="container">
+      <small class="muted">© <span id="yearFooter"></span> WorldConflict. Tous droits réservés.</small>
+    </div>
+  </footer>
+
+  <!-- page-specific behavior (form submission, validation, API) -->
   <script src="register.js" defer></script>
 </body>
 </html>
@@ -18974,78 +18978,68 @@ app.listen(PORT, "0.0.0.0", () => {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WorldConflict — Connexion</title>
-  <link rel="stylesheet" href="variables.css">
+
+  <!-- global bundle (importe css/variables.css, base, layout, components) -->
+  <link rel="stylesheet" href="wc.css">
+
+  <!-- styles spécifiques à la page d'accueil / connexion -->
   <link rel="stylesheet" href="index.css">
 </head>
-<body>
-  <main class="app">
-    <section class="hero">
-      <div class="brand">
-        <!-- Simple SVG logo -->
-        <svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0%" stop-color="#4f46e5" />
-              <stop offset="100%" stop-color="#06b6d4" />
-            </linearGradient>
-          </defs>
-          <rect rx="10" width="48" height="48" fill="url(#g)" />
-          <path d="M12 16c6-6 24 0 24 0s-6 12-12 18S12 16 12 16z" fill="#0f172a" opacity="0.08"/>
-          <path d="M16 20c4-4 12 0 12 0s-3 6-6 9-10-9-6-9z" fill="#fff" opacity="0.9"/>
-        </svg>
-        <div class="brand-text">
-          <h1>WorldConflict</h1>
-          <p class="tag">Serveur · Jeu · Communauté</p>
-        </div>
-      </div><div class="hero-illustration" aria-hidden="true">
-    <div class="cards">
-      <div class="card card-1"></div>
-      <div class="card card-2"></div>
-      <div class="card card-3"></div>
+<body class="wc-page">
+
+  <!-- Main: page de première connexion (formulaire central) -->
+  <main class="wc-main" role="main">
+    <div class="login-shell container">
+
+      <section class="auth-card" aria-labelledby="loginTitle">
+        <h1 id="loginTitle" class="login-title">Connexion</h1>
+        <p class="login-sub muted">Connecte-toi pour accéder à ton compte WorldConflict.</p>
+
+        <form id="loginForm" class="form" novalidate>
+          <label class="field">
+            <span class="label">Email ou nom d'utilisateur</span>
+            <input id="userInput" name="user" type="text" autocomplete="username" required />
+          </label>
+
+          <label class="field">
+            <span class="label">Mot de passe</span>
+            <div class="passwrap">
+              <input id="passwordInput" name="password" type="password" autocomplete="current-password" required minlength="6" />
+              <button type="button" id="togglePassword" class="icon-btn" aria-label="Afficher le mot de passe">Afficher</button>
+            </div>
+          </label>
+
+          <div class="row between low-contrast">
+            <label class="checkbox">
+              <input type="checkbox" name="remember" /> <span>Se souvenir</span>
+            </label>
+            <a class="link" href="forgot.html">Mot de passe oublié ?</a>
+          </div>
+
+          <button class="btn primary" type="submit">Se connecter</button>
+
+          <div class="sep" aria-hidden="true"><span>OU</span></div>
+
+          <a class="btn ghost" href="register.html" role="button">Créer un compte</a>
+
+          <p class="meta muted" style="margin-top:12px">En te connectant, tu acceptes notre <a href="rules.html" class="link">règlement</a>.</p>
+
+          <div id="loginStatus" role="status" aria-live="polite" class="muted" style="margin-top:8px"></div>
+        </form>
+      </section>
+
     </div>
-  </div>
-</section>
+  </main>
 
-<section class="auth">
-  <form id="loginForm" class="card form" novalidate>
-    <h2>Connexion</h2>
-    <p class="muted">Connecte-toi pour rejoindre ton serveur WorldConflict</p>
-
-    <label class="field">
-      <span class="label">Email ou nom d'utilisateur</span>
-      <input id="userInput" name="user" type="text" inputmode="email" autocomplete="username" required />
-    </label>
-
-    <label class="field">
-      <span class="label">Mot de passe</span>
-      <div class="passwrap">
-        <input id="passwordInput" name="password" type="password" autocomplete="current-password" required minlength="6" />
-        <button type="button" id="togglePassword" aria-label="Afficher le mot de passe">👁️</button>
-      </div>
-    </label>
-
-    <div class="row between">
-      <label class="checkbox">
-        <input type="checkbox" name="remember" /> <span>Se souvenir</span>
-      </label>
-      <a class="link" href="#">Mot de passe oublié ?</a>
+  <!-- Footer (minimal) -->
+  <footer class="wc-footer" role="contentinfo">
+    <div class="container">
+      <small class="muted">© <span id="yearFooter"></span> WorldConflict. Tous droits réservés.</small>
     </div>
-
-    <button class="btn primary" type="submit">Se connecter</button>
-
-    <div class="sep"><span>OU</span></div>
-
-    <button type="button" class="btn ghost" id="createAccount">Créer un compte</button>
-
-    <p class="meta muted">En te connectant, tu acceptes notre règlement.</p>
-  </form>
-
-  <footer class="legal">
-    <p>© <span id="year"></span> WorldConflict</p>
   </footer>
-</section>
-<script src="utils.js" defer></script>
-<script src="index.js" defer></script>
+
+  <script src="utils.js" defer></script>
+  <script src="index.js" defer></script>
 </body>
 </html>
 
