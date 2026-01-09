@@ -1,95 +1,155 @@
-<!doctype html>
+<!-- FILE: app.html --><!doctype html>
 
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WorldConflict — App</title>  <!-- Project base styles (shared) -->  <link rel="stylesheet" href="wc.css">
-  <!-- App-specific styles -->
-  <link rel="stylesheet" href="app.css">
+  <title>WorldConflict — App</title>  <!-- Base global styles (wc.css) -->  <link rel="stylesheet" href="wc.css">
+  <!-- App styles (to be added) -->
+  <link rel="stylesheet" href="app.css">  <!-- Meta and favicons (optional) -->  <meta name="theme-color" content="#0b1220">
 </head>
-<body>
-  <div id="wc-app" class="wc-shell">
-    <!-- LEFT: servers / navigation -->
-    <aside id="wc-left" class="wc-left" aria-label="Navigation principale">
-      <div class="wc-left-top">
-        <div class="wc-brand">WorldConflict</div>
-        <button id="btnToggleLeft" class="icon-btn" aria-label="Afficher/masquer">☰</button>
-      </div><nav class="wc-servers" aria-label="Serveurs / sections">
-    <button class="server active" data-panel="lobby" title="Lobby">Lobby</button>
-    <button class="server" data-panel="chat" title="Tchat">Tchat</button>
-    <button class="server" data-panel="map" title="Carte">Carte</button>
-    <button class="server" data-panel="actions" title="Actions RP">Actions</button>
-    <button class="server" data-panel="profile" title="Profil">Profil</button>
+<body>  <!-- Skip link for keyboard users --><a class="visually-hidden-focusable" href="#wc-panel-container">Aller au contenu</a>
+
+  <!-- APP SHELL -->  <div id="wc-app" class="wc-app" role="application" aria-label="WorldConflict application"><!-- LEFT SIDEBAR: servers / nav -->
+<aside class="wc-sidebar wc-sidebar-left" aria-label="Navigation principale">
+  <div class="wc-sidebar-top">
+    <button id="btnToggleSidebar" class="wc-icon-btn" aria-label="Basculer la barre latérale" aria-pressed="false">☰</button>
+    <div class="wc-brand" title="WorldConflict">WorldConflict</div>
+  </div>
+
+  <!-- server/section list -->
+  <nav id="wc-nav" class="wc-nav" role="navigation" aria-label="Sections">
+    <ul class="wc-nav-list">
+      <li><button class="wc-nav-item active" data-panel="lobby" aria-current="page" title="Lobby"><span aria-hidden>🏠</span><span class="sr-only">Lobby</span><span class="wc-badge" id="badge-lobby" aria-hidden></span></button></li>
+      <li><button class="wc-nav-item" data-panel="chat" title="Chat"><span aria-hidden>💬</span><span class="sr-only">Chat</span><span class="wc-badge" id="badge-chat" aria-hidden></span></button></li>
+      <li><button class="wc-nav-item" data-panel="map" title="Carte"><span aria-hidden>🗺</span><span class="sr-only">Carte</span></button></li>
+      <li><button class="wc-nav-item" data-panel="actions" title="Actions RP"><span aria-hidden>⚔</span><span class="sr-only">Actions RP</span></button></li>
+      <li><button class="wc-nav-item" data-panel="profile" title="Profil"><span aria-hidden>👤</span><span class="sr-only">Profil</span></button></li>
+    </ul>
   </nav>
 
-  <div class="wc-left-footer">
-    <button id="btnLogout" class="btn small">Se déconnecter</button>
+  <div class="wc-sidebar-footer">
+    <button id="btnCreate" class="wc-ghost-btn" title="Créer">＋</button>
+    <button id="btnLogout" class="wc-ghost-btn" title="Se déconnecter">⎋</button>
   </div>
 </aside>
 
-<!-- CENTER: main content area (panel injected here) -->
-<main id="wc-main" class="wc-main" role="main" tabindex="0">
-  <header class="wc-topbar">
-    <div class="wc-top-left">
-      <button id="btnBack" class="icon-btn" aria-hidden="true">←</button>
-      <div id="wc-breadcrumb" class="muted">Lobby</div>
+<!-- MAIN COLUMN -->
+<div class="wc-main-column" role="main">
+
+  <!-- TOPBAR: breadcrumb, search, user -->
+  <header class="wc-topbar" role="banner">
+    <div class="wc-topbar-left">
+      <nav class="wc-breadcrumb" aria-label="Fil d'Ariane"><span id="wc-current-panel">Lobby</span></nav>
+      <div class="wc-search" role="search" aria-label="Recherche">
+        <label for="wc-search-input" class="sr-only">Rechercher</label>
+        <input id="wc-search-input" type="search" placeholder="Rechercher un pays, un salon..." autocomplete="off">
+        <button id="wc-search-btn" class="wc-icon-btn" aria-label="Lancer la recherche">🔍</button>
+      </div>
     </div>
-    <div class="wc-top-right">
-      <div id="wc-user" class="user-mini">—</div>
+
+    <div class="wc-topbar-right">
+      <div id="wc-quick-actions" class="wc-quick-actions">
+        <button id="btnNotifications" class="wc-icon-btn" aria-label="Notifications" title="Notifications">🔔<span class="sr-only">Notifications</span><span id="notif-count" class="wc-badge" aria-hidden>0</span></button>
+        <div class="wc-user-menu" id="wc-user-menu">
+          <button id="wc-user-btn" class="wc-user-btn" aria-haspopup="true" aria-expanded="false">
+            <img id="wc-user-avatar" alt="Avatar" src="/img/default-avatar.png" width="28" height="28">
+            <span id="wc-username" class="wc-username">—</span>
+          </button>
+          <div id="wc-user-dropdown" class="wc-dropdown" role="menu" aria-hidden="true">
+            <button role="menuitem" id="profile-link">Profil</button>
+            <button role="menuitem" id="settings-link">Paramètres</button>
+            <button role="menuitem" id="logout-link">Se déconnecter</button>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <section id="wc-panel-container" class="wc-panel-container" aria-live="polite">
-    <!-- Initial lightweight placeholder — real panels are injected here -->
-    <div class="panel placeholder" id="panel-placeholder">
-      <h2>Chargement...</h2>
-      <p>Bienvenue dans WorldConflict — sélectionne une section à gauche.</p>
-    </div>
-  </section>
-</main>
+  <!-- PANEL CONTAINER: panels are inlined here for V1 (no magic) -->
+  <main id="wc-panel-container" class="wc-panel-container" tabindex="0" aria-live="polite">
 
-<!-- RIGHT: contextual panel (notifications / details) -->
-<aside id="wc-right" class="wc-right" aria-label="Panneau contextuel">
-  <div id="rightContent">
+    <!-- ===== LOBBY (default) ===== -->
+    <section id="panel-lobby" class="wc-panel wc-panel--active" data-panel="lobby">
+      <div class="wc-panel-header">
+        <h1>Lobby</h1>
+        <p class="muted">Vue d'ensemble du serveur et des RP actifs.</p>
+      </div>
+
+      <div class="wc-grid wc-grid-2">
+        <article class="wc-card">
+          <h2>État du RP</h2>
+          <div id="rp-status">Chargement…</div>
+        </article>
+
+        <article class="wc-card">
+          <h2>Membres en ligne</h2>
+          <div id="lobby-online" class="muted">—</div>
+        </article>
+      </div>
+
+      <div class="wc-section">
+        <h3>Activités récentes</h3>
+        <ul id="recent-activities" class="wc-list muted"><li>Aucune activité pour le moment.</li></ul>
+      </div>
+    </section>
+
+    <!-- ===== CHAT ===== -->
+    <section id="panel-chat" class="wc-panel" data-panel="chat" hidden>
+      <div class="wc-panel-header"><h1>Chat</h1></div>
+      <div id="chat-container">
+        <div id="chat-messages" class="chat-messages" aria-live="polite">Aucun message</div>
+        <form id="chat-form" class="chat-form" aria-label="Envoyer un message">
+          <input id="chat-input" placeholder="Écris un message..." autocomplete="off">
+          <button type="submit" class="btn">Envoyer</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== MAP ===== -->
+    <section id="panel-map" class="wc-panel" data-panel="map" hidden>
+      <div class="wc-panel-header"><h1>Carte</h1></div>
+      <div id="map-canvas" style="height:420px; background:#f3f4f6; border:1px solid #e6e9ef;">(Carte)</div>
+    </section>
+
+    <!-- ===== ACTIONS ===== -->
+    <section id="panel-actions" class="wc-panel" data-panel="actions" hidden>
+      <div class="wc-panel-header"><h1>Actions RP</h1></div>
+      <div id="actions-list" class="wc-list muted">Aucune action pour le moment.</div>
+    </section>
+
+    <!-- ===== PROFILE ===== -->
+    <section id="panel-profile" class="wc-panel" data-panel="profile" hidden>
+      <div class="wc-panel-header"><h1>Profil</h1></div>
+      <div id="profile-box">
+        <div class="wc-card"><strong id="profile-name">—</strong><div id="profile-meta" class="muted">—</div></div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- RIGHT SIDEBAR: contextual info (notifications, details) -->
+<aside class="wc-sidebar wc-sidebar-right" aria-label="Informations et notifications">
+  <div class="wc-right-header">
     <h3>Notifications</h3>
-    <div id="notifList">Aucune notification pour l'instant.</div>
+  </div>
+
+  <div class="wc-right-content">
+    <ul id="wc-notif-list" class="wc-list">
+      <li class="muted">Aucune notification.</li>
+    </ul>
+
+    <hr>
+
+    <div class="wc-info-block">
+      <h4>Qui est en ligne</h4>
+      <ul id="wc-online" class="wc-list muted"><li>—</li></ul>
+    </div>
   </div>
 </aside>
 
-  </div>  <!-- Templates for default lightweight panels (quick fallback) -->  <template id="tpl-lobby">
-    <div class="panel" data-panel="lobby">
-      <h1>Lobby</h1>
-      <p>Bienvenue — voici un aperçu rapide.</p>
-      <div class="card">
-        <h3>État RP</h3>
-        <div id="lobby-state">Chargement...</div>
-      </div>
-    </div>
-  </template>  <template id="tpl-chat">
-    <div class="panel" data-panel="chat">
-      <div class="chat-shell">
-        <div class="chat-messages" id="chatMessages">Aucun message.</div>
-        <form id="chatForm" class="chat-form">
-          <input id="chatInput" placeholder="Écris un message..." autocomplete="off">
-          <button class="btn">Envoyer</button>
-        </form>
-      </div>
-    </div>
-  </template>  <template id="tpl-map">
-    <div class="panel" data-panel="map">
-      <h1>Carte</h1>
-      <div id="mapContainer" style="height:400px; background:#f6f6f6; border:1px dashed #ddd;">Carte (Leaflet / mapbox à intégrer)</div>
-    </div>
-  </template>  <template id="tpl-actions">
-    <div class="panel" data-panel="actions">
-      <h1>Actions RP</h1>
-      <div id="actionsList">Chargement des actions...</div>
-    </div>
-  </template>  <template id="tpl-profile">
-    <div class="panel" data-panel="profile">
-      <h1>Profil</h1>
-      <div id="profileBox">Informations utilisateur</div>
-    </div>
-  </template>  <!-- App logic -->  <script src="app.js" defer></script></body>
+  </div>
+  <!-- END APP SHELL -->  <!-- Modal host (for dialogs) -->  <div id="wc-modal" class="wc-modal" aria-hidden="true"></div>  <!-- Application script (to be implemented) -->  <script src="app.js" defer></script></body>
 </html>
